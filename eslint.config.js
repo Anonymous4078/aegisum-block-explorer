@@ -40,4 +40,5 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-deprecated': 'off', */
     },
+  }
 );
