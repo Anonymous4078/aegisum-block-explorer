@@ -39,7 +39,7 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data: TickerResponse = await response.json()
+    const data = await response.json() as TickerResponse
 
     if (data.success && data.price) {
       // Update cache
