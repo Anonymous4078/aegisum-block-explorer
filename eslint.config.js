@@ -14,7 +14,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        project: './src/tsconfig.json',
+        project: './tsconfig.json',
       },
     },
   },
