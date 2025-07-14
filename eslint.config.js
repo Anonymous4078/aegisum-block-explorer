@@ -1,8 +1,13 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import next from 'eslint-config-next';
+//import next from 'eslint-config-next';
+import { FlatCompat } from '@eslint/eslintrc';
 
-export default tseslint.config(
+const compat = new FlatCompat({ baseDirectory: import.meta.url });
+
+export default [
+  ...compat.extends('next/core-web-vitals'),
+  tseslint.config(
   {
     files: ['**/*.{ts}'],
   },
@@ -48,4 +53,4 @@ export default tseslint.config(
       '@typescript-eslint/no-deprecated': 'off', */
     },
   },
-);
+)]
