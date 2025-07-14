@@ -3,7 +3,18 @@ import tseslint from 'typescript-eslint';
 import pluginNext from '@next/eslint-plugin-next';
 
 export default [
-  pluginNext(),
+  {
+    plugins: {
+      '@next/next': pluginNext,
+    },
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    rules: {
+      ...pluginNext.configs.recommended.rules,
+      // If you want Core Web Vitals too:
+       ...pluginNext.configs['core-web-vitals'].rules,
+    },
+  },
+//  pluginNext(),
   tseslint.config(
     {
       files: ['**/*.{ts,tsx}'],
