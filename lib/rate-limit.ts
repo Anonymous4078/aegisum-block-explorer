@@ -16,8 +16,7 @@ setInterval(
 
 export function rateLimit(identifier: string, limit: number, windowMs: number): boolean {
   const now = Date.now()
-  const windowStart = now - windowMs
-
+ 
   const record = requests.get(identifier)
 
   if (!record || now > record.resetTime) {
