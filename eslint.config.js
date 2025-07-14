@@ -7,8 +7,8 @@ export default tseslint.config(
     ignores: ['node_modules/'],
     plugins: {
       ['eslint']: eslint.configs.recommended,
-      ['typescript-eslint-strict-type-checked']: ...tseslint.configs.strictTypeChecked,
-      ['typescript-eslint-stylistic-type-checked']:  ...tseslint.configs.stylisticTypeChecked,
+      ['typescript-eslint-strict-type-checked']: tseslint.configs.strictTypeChecked,
+      ['typescript-eslint-stylistic-type-checked']:  tseslint.configs.stylisticTypeChecked,
       'next'] },
    languageOptions: {
       parserOptions: {
