@@ -1,11 +1,11 @@
-import { MongoClient } from "mongodb"
+import { MongoClient, Db } from "mongodb"
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/explorerdb"
 const MONGODB_DB = process.env.MONGODB_DB || "explorerdb"
 
 // Cache the MongoDB connection to reuse it across requests
-let cachedClient = null
-let cachedDb = null
+let cachedClient: MongoClient | null = null
+let cachedDb: Db | null = null
 
 export async function connectToDatabase() {
   // If we already have a connection, use it
@@ -28,18 +28,5 @@ export async function connectToDatabase() {
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error)
     throw new Error("Unable to connect to database")
-  }
-}
-
-// Add a function to test the connection
-export async function testDatabaseConnection() {
-  try {
-    const { db } = await connectToDatabase()
-    const collections = await db.listCollections().toArray()
-    console.log(`Connected to MongoDB. Found ${collections.length} collections.`)
-    return true
-  } catch (error) {
-    console.error("Database connection test failed:", error)
-    return false
   }
 }
