@@ -10,9 +10,9 @@ export default tseslint.config(
     ignores: ['node_modules/'],
   },
   eslint.configs.recommended,
+  next,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
-  next,
   {
     languageOptions: {
       parserOptions: {
