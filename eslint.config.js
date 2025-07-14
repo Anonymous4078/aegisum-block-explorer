@@ -1,7 +1,6 @@
+import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-//import next from 'eslint-config-next';
-import { FlatCompat } from '@eslint/eslintrc';
 
 const compat = new FlatCompat({ baseDirectory: import.meta.url });
 
@@ -10,24 +9,22 @@ export default [
     extends: ['next/core-web-vitals', 'next/typescript']
   }),
   tseslint.config(
-  {
-    files: ['**/*.{ts}'],
-  },
-  {
-    ignores: ['node_modules/'],
-  },
-  eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
+    {
+      files: ['**/*.{ts,tsx}'],
+    },
+    {
+      ignores: ['node_modules/'],
+    },
+    eslint.configs.recommended,
+    ...tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked,
+    {
+      languageOptions: {
+        parserOptions: { project: './tsconfig.json' }
       },
     },
-  },
-  {
-    rules: {
+    {
+      rules: {
       // eslint
       'dot-notation': 'error',
       eqeqeq: 'error',
@@ -52,6 +49,7 @@ export default [
       '@typescript-eslint/non-nullable-type-assertion-style': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-deprecated': 'off', */
-    },
-  },
-)]
+      }
+    }
+  )
+];
