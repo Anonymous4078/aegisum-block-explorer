@@ -40,8 +40,9 @@ export default tseslint.config(
       'unicode-bom': ['error', 'never'],
 
       // @typescript-eslint/eslint-plugin
-      /* '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      /* '@typescript-eslint/non-nullable-type-assertion-style': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-deprecated': 'off', */
     },
