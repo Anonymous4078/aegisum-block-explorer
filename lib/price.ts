@@ -6,6 +6,17 @@ type PriceCache = {
   timestamp: number
 }
 
+type TickerResponse = {
+  success: boolean;
+  initialprice: string;
+  price: string;
+  high: string;
+  low: string;
+  volume: string;
+  bid: string;
+  ask: string;
+};
+
 let priceCache: PriceCache | null = null
 
 export async function getAegsPrice(): Promise<string> {
@@ -28,7 +39,7 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json()
+    const data: TickerResponse = await response.json()
 
     if (data.success && data.price) {
       // Update cache
