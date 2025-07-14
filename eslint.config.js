@@ -1,62 +1,38 @@
+// eslint.config.mjs (or .js if "type": "module" is set)
+
+import pluginNext from '@next/eslint-plugin-next';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import pluginNext from '@next/eslint-plugin-next';
 
 export default [
+  // 1️⃣ Register Next.js plugin
   {
-    plugins: {
-      '@next/next': pluginNext,
+    plugins: { '@next/next': pluginNext },
+  },
+  // 2️⃣ Apply rules for .ts/.tsx files, including Next's recommended set
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: { project: './tsconfig.json' },
     },
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    extends: [],  // flat config doesn't support `extends`, so we copy rules manually
     rules: {
       ...pluginNext.configs.recommended.rules,
-      // If you want Core Web Vitals too:
-       ...pluginNext.configs['core-web-vitals'].rules,
-    },
-  },
-//  pluginNext(),
-  tseslint.config(
-    {
-      files: ['**/*.{ts,tsx}'],
-    },
-    {
-      ignores: ['node_modules/'],
-    },
-    eslint.configs.recommended,
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
-    {
-      languageOptions: {
-        parserOptions: { project: './tsconfig.json' }
-      },
-    },
-    {
-      rules: {
-      // eslint
+      // Uncomment for Core Web Vitals support:
+      // ...pluginNext.configs['core-web-vitals'].rules,
+
+      // Your custom rules:
       'dot-notation': 'error',
       eqeqeq: 'error',
-      'no-caller': 'error',
-      'no-constant-condition': ['error', { checkLoops: false }],
-      'no-eval': 'error',
-      'no-extra-bind': 'error',
-      'no-new-func': 'error',
-      'no-new-wrappers': 'error',
-      'no-return-await': 'error',
-      'no-template-curly-in-string': 'error',
-      'no-throw-literal': 'error',
-      'no-undef-init': 'error',
-      'no-var': 'error',
-      'object-shorthand': 'error',
-      'prefer-const': 'error',
-      'prefer-object-spread': 'error',
-      'unicode-bom': ['error', 'never'],
-
-      // @typescript-eslint/eslint-plugin
-      /* '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
-      '@typescript-eslint/no-unnecessary-condition': 'off',
-      '@typescript-eslint/no-deprecated': 'off', */
-      }
-    }
-  )
+      // …other ESLint rules…
+    },
+  },
+  // 3️⃣ Add your TypeScript strict & stylistic rules
+  tseslint.config(
+    { files: ['**/*.{ts,tsx}'] },
+    { ignores: ['node_modules/'] },
+    eslint.configs.recommended,
+    ...tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked
+  ),
 ];
