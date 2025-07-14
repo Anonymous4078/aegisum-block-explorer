@@ -963,14 +963,14 @@ export async function getPaginatedAddressTransactions(address, page = 1, limit =
 
 // Add this new function to fetch difficulty data for the last 50 blocks
 export async function getDifficultyHistory(limit = 50) {
-  const databaseConnection = await connectToDatabase().catch((error) => {
+  const databaseConnection = await connectToDatabase().catch((error: unknown) => {
          console.error("Error fetching peer info:", error)
          return null
     })
     
     if (!databaseConnection) return;
     
-    const { db } = databaseConnection.db
+    const { db } = databaseConnection
   
   try {
     // First try to get data from networkhistories collection
