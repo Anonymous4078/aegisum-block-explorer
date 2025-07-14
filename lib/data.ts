@@ -1044,7 +1044,12 @@ export async function getDifficultyHistory(limit = 50) {
 export async function getPeerInfo() {
   try {
     // First try to get from database if available
-    const { db } = await connectToDatabase()
+    const databaseConnection = await connectToDatabase()
+    if (databaseConnection instanceof Error) {
+       console.error("Error fetching peer info:", error)
+       return
+    }
+    const db = databaseConnection.db
     const peerInfo = await db.collection("peerinfo").find({}).sort({ lastsend: -1 }).toArray()
 
     if (peerInfo && peerInfo.length > 0) {
