@@ -7,7 +7,7 @@ const MONGODB_DB = process.env.MONGODB_DB ?? "explorerdb"
 let cachedClient: MongoClient | null = null
 let cachedDb: Db | null = null
 
-export async function connectToDatabase() {
+export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
   // If we already have a connection, use it
   if (cachedClient && cachedDb) {
     return { client: cachedClient, db: cachedDb }
