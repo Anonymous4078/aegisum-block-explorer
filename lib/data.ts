@@ -2,10 +2,10 @@ import { connectToDatabase } from "./mongodb"
 import axios from "axios"
 
 // RPC configuration
-const RPC_HOST = process.env.RPC_HOST || "localhost"
-const RPC_PORT = process.env.RPC_PORT || 39940
-const RPC_USER = process.env.RPC_USER || "rpcuser"
-const RPC_PASS = process.env.RPC_PASS || "rpcpassword"
+const RPC_HOST = process.env.RPC_HOST ?? "localhost"
+const RPC_PORT = process.env.RPC_PORT ?? 39940
+const RPC_USER = process.env.RPC_USER ?? "rpcuser"
+const RPC_PASS = process.env.RPC_PASS ?? "rpcpassword"
 const RPC_URL = `http://${RPC_USER}:${RPC_PASS}@${RPC_HOST}:${RPC_PORT}`
 
 // Helper function to make RPC calls
@@ -54,13 +54,13 @@ export async function getNetworkStats() {
     const latestNetworkHistory = await db.collection("networkhistories").findOne({}, { sort: { timestamp: -1 } })
 
     return {
-      count: coinStats.count || 0,
-      supply: coinStats.supply || 0,
-      txes: coinStats.txes || 0,
-      connections: coinStats.connections || 0,
-      nethash: (latestNetworkHistory?.nethash || 0) / 1000, // Convert MH/s to GH/s
-      difficulty_pow: latestNetworkHistory?.difficulty_pow || 0,
-      difficulty_pos: latestNetworkHistory?.difficulty_pos || 0,
+      count: coinStats.count ?? 0,
+      supply: coinStats.supply ?? 0,
+      txes: coinStats.txes ?? 0,
+      connections: coinStats.connections ?? 0,
+      nethash: (latestNetworkHistory?.nethash ?? 0) / 1000, // Convert MH/s to GH/s
+      difficulty_pow: latestNetworkHistory?.difficulty_pow ?? 0,
+      difficulty_pos: latestNetworkHistory?.difficulty_pos ?? 0,
     }
   } catch (error) {
     console.error("Error fetching network stats:", error)
@@ -136,8 +136,15 @@ export async function getLatestBlocks(limit = 10) {
 // Enhanced error handling for getRecentTransactions
 export async function getRecentTransactions(limit = 10) {
   try {
-    const { db } = await connectToDatabase()
-
+        const databaseConnection = await connectToDatabase().catch((error: unknown) => {
+         console.error("Error fetching peer info:", error)
+         return null
+    })
+    
+    if (!databaseConnection) return;
+    
+    const { db } = databaseConnection
+  
     const transactions = await db.collection("txes").find({}).sort({ timestamp: -1 }).limit(limit).toArray()
 
     return transactions
@@ -149,8 +156,15 @@ export async function getRecentTransactions(limit = 10) {
 }
 
 export async function getBlockByHash(hash) {
-  const { db } = await connectToDatabase()
-
+    const databaseConnection = await connectToDatabase().catch((error: unknown) => {
+         console.error("Error fetching peer info:", error)
+         return null
+    })
+    
+    if (!databaseConnection) return;
+    
+    const { db } = databaseConnection
+  
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
   const transactions = await db.collection("txes").find({ blockhash: hash }).toArray()
 
@@ -1058,7 +1072,7 @@ export async function getPeerInfo() {
     
     if (!databaseConnection) return;
     
-    const { db }= databaseConnection
+    const { db } = databaseConnection
     const peerInfo = await db.collection("peerinfo").find({}).sort({ lastsend: -1 }).toArray()
 
     if (peerInfo && peerInfo.length > 0) {
