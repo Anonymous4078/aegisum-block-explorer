@@ -1,7 +1,7 @@
 import { MongoClient, Db } from "mongodb"
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/explorerdb"
-const MONGODB_DB = process.env.MONGODB_DB || "explorerdb"
+const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://localhost:27017/explorerdb"
+const MONGODB_DB = process.env.MONGODB_DB ?? "explorerdb"
 
 // Cache the MongoDB connection to reuse it across requests
 let cachedClient: MongoClient | null = null
