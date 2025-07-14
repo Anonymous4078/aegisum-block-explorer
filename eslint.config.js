@@ -4,17 +4,21 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     files: ['**/*.{ts}'],
+  },
+  {
     ignores: ['node_modules/'],
-    plugins: {
-      ['eslint']: eslint.configs.recommended,
-      ['typescript-eslint-strict-type-checked']: tseslint.configs.strictTypeChecked,
-      ['typescript-eslint-stylistic-type-checked']:  tseslint.configs.stylisticTypeChecked,
-      'next' },
-   languageOptions: {
+  },
+  eslint.configs.recommended,
+  ...tseslint.configs.strictTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+  {
+    languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
       },
     },
+  },
+  {
     rules: {
       // eslint
       'dot-notation': 'error',
@@ -41,5 +45,5 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-deprecated': 'off', */
     },
-  }
+  },
 );
