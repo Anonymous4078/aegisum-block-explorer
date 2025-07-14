@@ -5,10 +5,11 @@ export default tseslint.config(
   {
     files: ['**/*.{ts}'],
     ignores: ['node_modules/'],
-    plugins: [ eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  'plugin:@next/next/recommended'],
+    plugins: [ 
+      ['eslint']: eslint.configs.recommended,
+      ['typescript-eslint-strict-type-checked']: ...tseslint.configs.strictTypeChecked,
+      ['typescript-eslint-stylistic-type-checked']:  ...tseslint.configs.stylisticTypeChecked,
+      'next'],
    languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
