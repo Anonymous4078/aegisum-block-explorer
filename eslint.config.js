@@ -9,7 +9,7 @@ export default tseslint.config(
       ['eslint']: eslint.configs.recommended,
       ['typescript-eslint-strict-type-checked']: tseslint.configs.strictTypeChecked,
       ['typescript-eslint-stylistic-type-checked']:  tseslint.configs.stylisticTypeChecked,
-      'next'] },
+      'next' },
    languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
