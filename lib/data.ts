@@ -975,6 +975,25 @@ export async function getPaginatedAddressTransactions(address, page = 1, limit =
   return { transactions: enrichedTxs, pagination: { currentPage: page, totalPages, totalItems: totalCount } }
 }
 
+type NetworkHistory = {
+  blockindex: number;
+  difficulty_pow: number;
+  nethash: number;
+  timestamp: number;
+}
+
+type Block = {
+  difficulty: number;
+  hash: string;
+  height: number;
+  merkleroot: string;
+  nonce: number;
+  previousblockhash: string;
+  size: number;
+  txCount: number;
+  timestamp: number;
+}
+
 // Add this new function to fetch difficulty data for the last 50 blocks
 export async function getDifficultyHistory(limit = 50) {
   const databaseConnection = await connectToDatabase().catch((error: unknown) => {
@@ -989,7 +1008,7 @@ export async function getDifficultyHistory(limit = 50) {
   try {
     // First try to get data from networkhistories collection
     const networkHistory = await db
-      .collection("networkhistories")
+      .collection<NetworkHistory>("networkhistories")
       .find({})
       .sort({ blockindex: -1 })
       .limit(limit)
@@ -1007,7 +1026,7 @@ export async function getDifficultyHistory(limit = 50) {
     }
 
     // If no network history, try to reconstruct from blocks collection
-    const blocks = await db.collection("blocks").find({}).sort({ height: -1 }).limit(limit).toArray()
+    const blocks = await db.collection<Block>("blocks").find({}).sort({ height: -1 }).limit(limit).toArray()
 
     if (blocks && blocks.length > 0) {
       // Sort by height ascending for proper chart display
@@ -1015,7 +1034,7 @@ export async function getDifficultyHistory(limit = 50) {
         .sort((a, b) => a.height - b.height)
         .map((block) => ({
           blockHeight: block.height,
-          difficulty: block.difficulty || 0,
+          difficulty: block.difficulty ?? 0,
           timestamp: block.timestamp,
         }))
     }
