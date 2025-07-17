@@ -996,16 +996,11 @@ type Block = {
 
 // Add this new function to fetch difficulty data for the last 50 blocks
 export async function getDifficultyHistory(limit = 50) {
-  const databaseConnection = await connectToDatabase().catch((error: unknown) => {
-         console.error("Error fetching peer info:", error)
-         return null
-    })
-    
-    if (!databaseConnection) return;
+  try {
+    const databaseConnection = await connectToDatabase()
     
     const { db } = databaseConnection
-  
-  try {
+
     // First try to get data from networkhistories collection
     const networkHistory = await db
       .collection<NetworkHistory>("networkhistories")
@@ -1084,12 +1079,7 @@ export async function getDifficultyHistory(limit = 50) {
 export async function getPeerInfo() {
   try {
     // First try to get from database if available
-    const databaseConnection = await connectToDatabase().catch((error: unknown) => {
-         console.error("Error fetching peer info:", error)
-         return null
-    })
-    
-    if (!databaseConnection) return;
+    const databaseConnection = await connectToDatabase()
     
     const { db } = databaseConnection
     const peerInfo = await db.collection("peerinfo").find({}).sort({ lastsend: -1 }).toArray()
