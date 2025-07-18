@@ -6,7 +6,14 @@ import xoTypeScript from 'eslint-config-xo-typescript';
 export default [
 	...xo,
   ...xoReact,
-  ...xoTypeScript
+  ...xoTypeScript,
+	{
+    rules: {
+	    '@stylistic/semi': 'off',
+	    '@stylistic/indent': 'off',
+	    '@stylistic/no-trailing-spaces': 'off'                                       
+    }
+	}
 ];
 /*import xo from 'xo';
 
