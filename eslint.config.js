@@ -9,9 +9,12 @@ export default [
   ...xoTypeScript,
 	{
     rules: {
+	    'curly': 'off',
 	    '@stylistic/semi': 'off',
 	    '@stylistic/indent': 'off',
-	    '@stylistic/no-trailing-spaces': 'off'                                       
+	    '@stylistic/no-trailing-spaces': 'off',
+	    '@stylistic/object-curly-spacing': 'off',
+	    '@stylistic/quotes': 'off'                                                
     }
 	}
 ];
