@@ -24,15 +24,15 @@ export function timeAgo(timestamp: number): string {
   const seconds = Math.floor(Date.now() / 1000 - timestamp)
 
   const intervals = {
-    year: 31536000,
-    month: 2592000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-    second: 1,
-  }
-
+  year: 31_536_000,
+  month: 2_592_000,
+  week: 604_800,
+  day: 86_400,
+  hour: 3_600,
+  minute: 60,
+  second: 1,
+};
+  
   let counter
   for (const [unit, secondsInUnit] of Object.entries(intervals)) {
     counter = Math.floor(seconds / secondsInUnit)
