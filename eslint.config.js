@@ -14,7 +14,8 @@ export default [
 	    '@stylistic/indent': 'off',
 	    '@stylistic/no-trailing-spaces': 'off',
 	    '@stylistic/object-curly-spacing': 'off',
-	    '@stylistic/quotes': 'off'                                                
+	    '@stylistic/quotes': 'off',
+	    '@stylistic/block-spacing': 'off'	    
     }
 	}
 ];
