@@ -1,9 +1,13 @@
-import eslint from '@eslint/js';
+import xo from 'xo';
+
+export default xo.xoToEslintConfig([{space: true, prettier: 'compat', react: true }]);
+
+/*import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['/*.{ts,tsx,js,jsx}'],
   },
   {
     ignores: ['node_modules/'],
@@ -42,9 +46,9 @@ export default tseslint.config(
       // @typescript-eslint/eslint-plugin
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
-      /* '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
-      '@typescript-eslint/no-deprecated': 'off', */
+      '@typescript-eslint/no-deprecated': 'off', 
     },
   },
-);
+);*/
