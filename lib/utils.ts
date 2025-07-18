@@ -12,7 +12,7 @@ export function formatNumber(num: number): string {
 export function formatHash(hash: string, length = 6): string {
   if (!hash) return ""
   if (hash === "coinbase") return "Coinbase"
-  if (hash.length <= length * 2 + 3) return hash
+  if (hash.length <= (length * 2) + 3) return hash
   return `${hash.substring(0, length)}...${hash.substring(hash.length - length)}`
 }
 
@@ -21,7 +21,7 @@ export function formatTimestamp(timestamp: number): string {
 }
 
 export function timeAgo(timestamp: number): string {
-  const seconds = Math.floor(Date.now() / 1000 - timestamp)
+  const seconds = Math.floor((Date.now() / 1000) - timestamp)
 
   const intervals = {
   year: 31_536_000,
