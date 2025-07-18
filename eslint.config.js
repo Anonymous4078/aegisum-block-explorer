@@ -1,6 +1,16 @@
-import xo from 'xo';
+// eslint.config.js
+import xo from 'eslint-config-xo';
+import xoReact from 'eslint-config-xo-react';
+import xoTypeScript from 'eslint-config-xo-typescript';
 
-export default xo.xoToEslintConfig([{space: true, prettier: 'compat', react: true }]);
+export default [
+	...xo,
+  ...xoReact,
+  ...xoTypeScript
+];
+/*import xo from 'xo';
+
+export default xo.xoToEslintConfig([{space: true, prettier: 'compat', react: true }]);*/
 
 /*import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
