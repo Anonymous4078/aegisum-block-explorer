@@ -73,11 +73,10 @@ export const knownAddresses: KnownAddress[] = [
 ]
 
 // Map for quick lookups
-export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.reduce<Record<string, KnownAddress>>(
-  (acc, addr) => {
+export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.reduce<Record<string, KnownAddress>>((acc, addr) => {
     acc[addr.address] = addr
     return acc
-  }
+  },
 )
 
 /**
