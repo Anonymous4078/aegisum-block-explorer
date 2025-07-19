@@ -72,18 +72,47 @@ type NetworkHistory = {
   timestamp: number;
 };
 
+type MempoolStats = {
+  bytes: number;
+  size: number;
+  usage: number;
+  timestamp: number;
+}
+
 type Transaction = {
   txid: string;
   blockhash: string;
   blockindex: number;
   timestamp: number;
-  vin: [{ addresses: string; amount: number }],
-  vout: [{ addresses: string; amount: number }],
-  total: number,
-  tx_type: null,
-  op_return: string | null,
-  algo: string, 
+  vin: [{ addresses: string; amount: number; }],
+  vout: [{ addresses: string; amount: number; }],
+  total: number;
+  tx_type: null;
+  op_return: string | null;
+  algo: string;
 }
+
+// RPC API Types
+type BlockSummary = {
+  id: string;
+  height: number;
+  hash: string;
+  timestamp: number;
+  txCount: number;
+  minedBy: string | null;
+};
+
+type MempoolInfo = {
+  loaded: boolean;
+  size: number;
+  bytes: number;
+  usage: number;
+  maxmempool : number;       
+  mempoolminfee : number;      
+  minrelaytxfee : number;      
+  unbroadcastcount : number;
+}
+
 
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
@@ -143,7 +172,7 @@ export async function getLatestBlocks(limit = 10) {
     // Get blocks with proper coinbase miner detection
     const blocks = await db
       .collection<Transaction>("txes")
-      .aggregate([
+      .aggregate<BlockSummary>([
         { $sort: { blockindex: -1 } },
         {
           $group: {
@@ -345,7 +374,7 @@ export async function getTransactionById(txid) {
                 const prevTx = await getRawTransaction(input.txid);
                 if (prevTx && prevTx.vout && prevTx.vout[input.vout]) {
                   const prevOutput = prevTx.vout[input.vout];
-                  const addresses = prevOutput.scriptPubKey.addresses || [];
+                  const addresses = prevOutput.scriptPubKey.addresses ?? [];
                   const amount = Math.round(prevOutput.value * 100000000); // Convert to satoshis
 
                   if (addresses.length > 0) {
@@ -443,7 +472,7 @@ export async function getAddressTransactions(address, limit = 25) {
   const enrichedTxs = [];
 
   for (const tx of addressTxs) {
-    const transaction = await db.collection("txes").findOne({ txid: tx.txid });
+    const transaction = await db.collection<Transaction>("txes").findOne({ txid: tx.txid });
     if (transaction) {
       enrichedTxs.push({
         ...tx,
@@ -495,7 +524,7 @@ export async function getMempoolTransactions() {
 
     // Try to get more detailed mempool info from RPC
     let transactions = dbTransactions;
-    let stats = (await db.collection("mempoolstats").findOne({})) || {
+    let stats = (await db.collection("mempoolstats")<MempoolStats>.findOne({})) ?? {
       size: 0,
       bytes: 0,
       usage: 0,
@@ -503,7 +532,7 @@ export async function getMempoolTransactions() {
 
     try {
       // Get mempool info from RPC
-      const mempoolInfo = await rpcCall("getmempoolinfo");
+      const mempoolInfo = await rpcCall<MempoolInfo>("getmempoolinfo");
 
       // Update stats with RPC data
       stats = {
