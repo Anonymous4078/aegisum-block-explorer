@@ -524,7 +524,7 @@ export async function getMempoolTransactions() {
 
     // Try to get more detailed mempool info from RPC
     let transactions = dbTransactions;
-    let stats = (await db.collection("mempoolstats")<MempoolStats>.findOne({})) ?? {
+    let stats = (await db.collection<MempoolStats>("mempoolstats").findOne({})) ?? {
       size: 0,
       bytes: 0,
       usage: 0,
