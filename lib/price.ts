@@ -1,9 +1,9 @@
 // Cache duration in milliseconds (20 minutes)
-const CACHE_DURATION = 20 * 60 * 1000
+const cacheDuration = 20 * 60 * 1000
 
 type PriceCache = {
-  price: string
-  timestamp: number
+  price: string;
+  timestamp: number;
 }
 
 type TickerResponse = {
@@ -28,7 +28,7 @@ export async function getAegsPrice(): Promise<string> {
   try {
     // Cache is expired or doesn't exist, fetch new data
     const response = await fetch("https://tradeogre.com/api/v1/ticker/AEGS-USDT", {
-      next: { revalidate: CACHE_DURATION / 1000 }, // Use Next.js cache
+      next: { revalidate: cacheDuration / 1000 }, // Use Next.js cache
       headers: {
         Accept: "application/json",
         "User-Agent": "Aegisum-Explorer/1.0",
