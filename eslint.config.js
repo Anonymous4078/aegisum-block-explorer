@@ -15,7 +15,8 @@ export default [
 	    '@stylistic/no-trailing-spaces': 'off',
 	    '@stylistic/object-curly-spacing': 'off',
 	    '@stylistic/quotes': 'off',
-	    '@stylistic/block-spacing': 'off'	    
+	    '@stylistic/block-spacing': 'off',
+	    '@typescript-eslint/no-restricted-types': 'off',
     }
 	}
 ];
