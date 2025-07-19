@@ -10,6 +10,7 @@ export default [
   {
     rules: {
       curly: "off",
+      '@stylistic/operator-linebreak': "off",
       "@stylistic/semi": "off",
       "@stylistic/indent": "off",
       "@stylistic/no-trailing-spaces": "off",
