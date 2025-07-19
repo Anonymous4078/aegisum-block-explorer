@@ -977,7 +977,8 @@ export async function getPaginatedAddressTransactions(address, page = 1, limit =
 
 type NetworkHistory = {
   blockindex: number;
-  difficulty_pow: number;
+  difficulty_pos: number;
+  difficulty_pow: number;  
   nethash: number;
   timestamp: number;
 }
@@ -1057,12 +1058,12 @@ export async function getDifficultyHistory(limit = 50) {
       if (tx) {
         // Get difficulty from network history closest to this block
         const networkData = await db
-          .collection("networkhistories")
+          .collection<NetworkHistory>("networkhistories")
           .findOne({ blockindex: { $lte: height } }, { sort: { blockindex: -1 } })
 
         difficultyData.push({
           blockHeight: height,
-          difficulty: networkData?.difficulty_pow || 0,
+          difficulty: networkData?.difficulty_pow ?? 0,
           timestamp: tx.timestamp,
         })
       }
