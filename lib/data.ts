@@ -9,8 +9,8 @@ const RPC_PASS = process.env.RPC_PASS ?? "rpcpassword";
 const RPC_URL = `http://${RPC_USER}:${RPC_PASS}@${RPC_HOST}:${RPC_PORT}`;
 
 // Helper function to make RPC calls
-export async function rpcCall<T extends unknown = unknown>(
-  method,
+export async function rpcCall<T>(
+  method: string,
   params = [],
 ): Promise<T> {
   try {
@@ -32,12 +32,65 @@ export async function rpcCall<T extends unknown = unknown>(
   }
 }
 
+type Block = {
+  difficulty: number;
+  hash: string;
+  height: number;
+  merkleroot: string;
+  nonce: number;
+  previousblockhash: string;
+  size: number;
+  txCount: number;
+  timestamp: number;
+};
+
+type CoinStats = {
+  coin: "Aegisum";
+        count: number;
+        last: number;
+        supply: number;
+        txes: number;
+        connections: number;
+        last_price: number;
+        last_usd_price: number;
+        blockchain_last_updated: number;
+        reward_last_updated: number;
+        masternodes_last_updated: number;
+        network_last_updated: number;
+        richlist_last_updated: number;
+        markets_last_updated: number;
+        orphan_index: number;
+        orphan_current: number;
+        newer_claim_address: boolean;
+}
+
+type NetworkHistory = {
+  blockindex: number;
+  difficulty_pos: number;
+  difficulty_pow: number;
+  nethash: number;
+  timestamp: number;
+};
+
+type Transaction = {
+  txid: string;
+  blockhash: string;
+  blockindex: number;
+  timestamp: number;
+  vin: [{ addresses: string; amount: number }],
+  vout: [{ addresses: string; amount: number }],
+  total: number,
+  tx_type: null,
+  op_return: string | null,
+  algo: string, 
+}
+
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
     const { db } = await connectToDatabase();
 
-    const coinStats = await db.collection("coinstats").findOne({});
+    const coinStats = await db.collection<CoinStats>("coinstats").findOne({});
 
     // Provide fallback values if database query returns null
     if (!coinStats) {
@@ -89,7 +142,7 @@ export async function getLatestBlocks(limit = 10) {
 
     // Get blocks with proper coinbase miner detection
     const blocks = await db
-      .collection("txes")
+      .collection<Transaction>("txes")
       .aggregate([
         { $sort: { blockindex: -1 } },
         {
@@ -143,22 +196,12 @@ export async function getLatestBlocks(limit = 10) {
   }
 }
 
-// Enhanced error handling for getRecentTransactions
 export async function getRecentTransactions(limit = 10) {
   try {
-    const databaseConnection = await connectToDatabase().catch(
-      (error: unknown) => {
-        console.error("Error fetching peer info:", error);
-        return null;
-      },
-    );
-
-    if (!databaseConnection) return;
-
-    const { db } = databaseConnection;
-
+    const { db } = await connectToDatabase()
+    
     const transactions = await db
-      .collection("txes")
+      .collection<Transaction>("txes")
       .find({})
       .sort({ timestamp: -1 })
       .limit(limit)
@@ -173,20 +216,11 @@ export async function getRecentTransactions(limit = 10) {
 }
 
 export async function getBlockByHash(hash) {
-  const databaseConnection = await connectToDatabase().catch(
-    (error: unknown) => {
-      console.error("Error fetching peer info:", error);
-      return null;
-    },
-  );
-
-  if (!databaseConnection) return;
-
-  const { db } = databaseConnection;
+  const { db } = await connectToDatabase()
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
   const transactions = await db
-    .collection("txes")
+    .collection<Transaction>("txes")
     .find({ blockhash: hash })
     .toArray();
 
@@ -197,7 +231,7 @@ export async function getBlockByHash(hash) {
   // Get the previous block hash (this is a simplification)
   const blockHeight = transactions[0].blockindex;
   const previousBlock = await db
-    .collection("txes")
+    .collection<Transaction>("txes")
     .findOne({ blockindex: blockHeight - 1 }, { sort: { timestamp: -1 } });
 
   // Construct a block object
@@ -215,7 +249,7 @@ export async function getBlockByHash(hash) {
 
   // Get difficulty from network history
   const networkHistory = await db
-    .collection("networkhistories")
+    .collection<NetworkHistory>("networkhistories")
     .findOne(
       { blockindex: { $lte: blockHeight } },
       { sort: { blockindex: -1 } },
@@ -234,13 +268,13 @@ export async function getNextBlockHash(currentHeight) {
 
     // First try to find in the blocks collection
     const nextBlock = await db
-      .collection("blocks")
+      .collection<Block>("blocks")
       .findOne({ height: currentHeight + 1 });
 
     // If not found in blocks collection, try to find in txes
     if (!nextBlock) {
       const nextBlockTx = await db
-        .collection("txes")
+        .collection<Transaction>("txes")
         .findOne({ blockindex: currentHeight + 1 }, { sort: { timestamp: 1 } });
 
       if (nextBlockTx) {
@@ -261,7 +295,7 @@ export async function getTransactionsByBlockHash(hash) {
   const { db } = await connectToDatabase();
 
   const transactions = await db
-    .collection("txes")
+    .collection<Transaction>("txes")
     .find({ blockhash: hash })
     .toArray();
 
@@ -272,7 +306,7 @@ export async function getTransactionById(txid) {
   const { db } = await connectToDatabase();
 
   // First check in confirmed transactions
-  const transaction = await db.collection("txes").findOne({ txid });
+  const transaction = await db.collection<Transaction>("txes").findOne({ txid });
 
   if (transaction) {
     return transaction;
@@ -438,7 +472,7 @@ export async function getNetworkHistory(limit = 30) {
   const { db } = await connectToDatabase();
 
   const history = await db
-    .collection("networkhistories")
+    .collection<NetworkHistory>("networkhistories")
     .find({})
     .sort({ timestamp: -1 })
     .limit(limit)
@@ -473,9 +507,9 @@ export async function getMempoolTransactions() {
 
       // Update stats with RPC data
       stats = {
-        size: mempoolInfo.size || stats.size || 0,
-        bytes: mempoolInfo.bytes || stats.bytes || 0,
-        usage: mempoolInfo.usage || stats.usage || 0,
+        size: mempoolInfo.size ?? stats.size ?? 0,
+        bytes: mempoolInfo.bytes ?? stats.bytes ?? 0,
+        usage: mempoolInfo.usage ?? stats.usage ?? 0,
       };
 
       // Try to get detailed mempool transactions
@@ -486,9 +520,9 @@ export async function getMempoolTransactions() {
         const rpcTransactions = Object.entries(rawMempool).map(
           ([txid, info]) => ({
             txid,
-            size: info.size || 0,
-            time: info.time || Math.floor(Date.now() / 1000),
-            fee: info.fee || 0,
+            size: info.size ?? 0,
+            time: info.time ?? Math.floor(Date.now() / 1000),
+            fee: info.fee ?? 0,
             ...info,
           }),
         );
@@ -612,7 +646,7 @@ export async function getMiningStats() {
 
   // Get latest network history for current difficulty and hashrate
   const latestNetworkHistory = await db
-    .collection("networkhistories")
+    .collection<NetworkHistory>("networkhistories")
     .findOne({}, { sort: { timestamp: -1 } });
 
   // Try to get mining info from RPC
@@ -623,13 +657,13 @@ export async function getMiningStats() {
     // Get mining info from RPC
     const miningInfo = await rpcCall("getmininginfo");
     if (miningInfo) {
-      difficulty = miningInfo.difficulty || difficulty;
+      difficulty = miningInfo.difficulty ?? difficulty;
 
       // Get network hashrate from RPC (120 blocks average)
       const hashps = await rpcCall("getnetworkhashps", [120, -1]);
       if (hashps) {
         // Convert to GH/s (RPC returns H/s)
-        networkhashps = hashps / 1000000000;
+        networkhashps = hashps / 1_00_00_00_000;
       }
     }
   } catch (error) {
@@ -1003,7 +1037,7 @@ export async function getMiningStats() {
     for (let i = 0; i < specialBlocks.length; i++) {
       const blockHeight = specialBlocks[i].height;
       const tx = await db
-        .collection("txes")
+        .collection<Transaction>("txes")
         .findOne({ blockindex: blockHeight });
       if (tx) {
         specialBlocks[i].hash = tx.blockhash;
@@ -1179,26 +1213,6 @@ export async function getPaginatedAddressTransactions(
     pagination: { currentPage: page, totalPages, totalItems: totalCount },
   };
 }
-
-type NetworkHistory = {
-  blockindex: number;
-  difficulty_pos: number;
-  difficulty_pow: number;
-  nethash: number;
-  timestamp: number;
-};
-
-type Block = {
-  difficulty: number;
-  hash: string;
-  height: number;
-  merkleroot: string;
-  nonce: number;
-  previousblockhash: string;
-  size: number;
-  txCount: number;
-  timestamp: number;
-};
 
 // Add this new function to fetch difficulty data for the last 50 blocks
 export async function getDifficultyHistory(limit = 50) {
