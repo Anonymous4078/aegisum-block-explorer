@@ -1,14 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getNetworkStats } from "@/lib/data";
+import { rpcCall } from "@/lib/data";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   try {
     // Get client IP
     const ip =
-      request.ip ||
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
+      request.ip ??
+      request.headers.get("x-forwarded-for") ??
+      request.headers.get("x-real-ip") ??
       "unknown";
 
     // Apply rate limiting (60 requests per minute)
@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const networkStats = await getNetworkStats();
+    const difficulty = await rpcCall<number>("getdifficulty");
 
-    return new NextResponse(networkStats.difficulty_pow, {
+    return new NextResponse(difficulty, {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
