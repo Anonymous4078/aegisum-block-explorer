@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getNetworkStats } from "@/lib/data";
+import { rpcCall } from "@/lib/data";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const networkStats = await getNetworkStats();
+    const blockHeight = await rpcCall<number>("getblockcount");
 
-    return new NextResponse(networkStats.count.toString(), {
+    return new NextResponse(blockHeight.toString(), {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
