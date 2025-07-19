@@ -17,8 +17,10 @@ export default [
       "@stylistic/quotes": "off",
       "@stylistic/block-spacing": "off",
       "@typescript-eslint/no-restricted-types": "off",
+      "@stylistic/jsx-quotes": "off",
       "react/jsx-indent": "off",
       "react/jsx-indent-props": "off",
+      "react/react-in-jsx-scope": "off",
     },
   },
 ];
