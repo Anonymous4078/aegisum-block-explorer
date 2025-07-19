@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     const blockHeight = await rpcCall<number>("getblockcount");
 
-    return new NextResponse(blockHeight.toString(), {
+    return new NextResponse(blockHeight, {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
