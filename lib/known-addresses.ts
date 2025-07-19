@@ -5,12 +5,12 @@
  * Add new addresses here to have them automatically recognized throughout the explorer.
  */
 
-export interface KnownAddress {
-  address: string
-  tag: string
-  description?: string
-  url?: string
-  type: "dev" | "pool" | "exchange" | "service" | "team" | "other"
+type KnownAddress = {
+  address: string;
+  tag: string;
+  description?: string;
+  url?: string;
+  type: "dev" | "pool" | "exchange" | "service" | "team" | "other";
 }
 
 // List of known addresses
@@ -73,12 +73,11 @@ export const knownAddresses: KnownAddress[] = [
 ]
 
 // Map for quick lookups
-export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.reduce(
+export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.reduce<Record<string, KnownAddress>>(
   (acc, addr) => {
     acc[addr.address] = addr
     return acc
-  },
-  {} as Record<string, KnownAddress>,
+  }
 )
 
 /**
