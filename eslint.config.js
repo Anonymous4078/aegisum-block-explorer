@@ -1,26 +1,26 @@
 // eslint.config.js
-import xo from 'eslint-config-xo';
-import xoReact from 'eslint-config-xo-react';
-import xoTypeScript from 'eslint-config-xo-typescript';
+import xo from "eslint-config-xo";
+import xoReact from "eslint-config-xo-react";
+import xoTypeScript from "eslint-config-xo-typescript";
 
 export default [
-	...xo,
+  ...xo,
   ...xoReact,
   ...xoTypeScript,
-	{
+  {
     rules: {
-	    'curly': 'off',
-	    '@stylistic/semi': 'off',
-	    '@stylistic/indent': 'off',
-	    '@stylistic/no-trailing-spaces': 'off',
-	    '@stylistic/object-curly-spacing': 'off',
-	    '@stylistic/quotes': 'off',
-	    '@stylistic/block-spacing': 'off',
-	    '@typescript-eslint/no-restricted-types': 'off',
-	    'react/jsx-indent': 'off',
-	    'react/jsx-indent-props': 'off'
-    }
-	}
+      curly: "off",
+      "@stylistic/semi": "off",
+      "@stylistic/indent": "off",
+      "@stylistic/no-trailing-spaces": "off",
+      "@stylistic/object-curly-spacing": "off",
+      "@stylistic/quotes": "off",
+      "@stylistic/block-spacing": "off",
+      "@typescript-eslint/no-restricted-types": "off",
+      "react/jsx-indent": "off",
+      "react/jsx-indent-props": "off",
+    },
+  },
 ];
 /*import xo from 'xo';
 

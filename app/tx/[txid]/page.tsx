@@ -1,30 +1,51 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { formatNumber, formatTimestamp } from "@/lib/utils"
-import { getTransactionById, getNetworkStats } from "@/lib/data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { ArrowDownToLine, ArrowUpFromLine, Clock, CheckCircle } from "lucide-react"
-import { AddressTag } from "@/components/address-tag"
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { formatNumber, formatTimestamp } from "@/lib/utils";
+import { getTransactionById, getNetworkStats } from "@/lib/data";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  Clock,
+  CheckCircle,
+} from "lucide-react";
+import { AddressTag } from "@/components/address-tag";
 
 export default async function TransactionPage({ params }) {
-  const { txid } = params
+  const { txid } = params;
 
   // Try to get the transaction from the database and network stats
-  const [tx, networkStats] = await Promise.all([getTransactionById(txid), getNetworkStats()])
+  const [tx, networkStats] = await Promise.all([
+    getTransactionById(txid),
+    getNetworkStats(),
+  ]);
 
   if (!tx) {
-    notFound()
+    notFound();
   }
 
   // Check if this is a mempool transaction (no blockhash)
-  const isPending = !tx.blockhash || tx.isPending
+  const isPending = !tx.blockhash || tx.isPending;
 
   // Calculate confirmations for confirmed transactions
-  let confirmations = 0
+  let confirmations = 0;
   if (!isPending && tx.blockindex && networkStats.count) {
-    confirmations = networkStats.count - tx.blockindex + 1
+    confirmations = networkStats.count - tx.blockindex + 1;
   }
 
   return (
@@ -50,41 +71,58 @@ export default async function TransactionPage({ params }) {
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Transaction Information</CardTitle>
-          <CardDescription>Detailed information about this transaction</CardDescription>
+          <CardDescription>
+            Detailed information about this transaction
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-4">
               {!isPending && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Block</h3>
-                  <Link href={`/block/${tx.blockhash}`} className="text-primary hover:underline">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                    Block
+                  </h3>
+                  <Link
+                    href={`/block/${tx.blockhash}`}
+                    className="text-primary hover:underline"
+                  >
                     {tx.blockindex}
                   </Link>
                 </div>
               )}
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Timestamp</h3>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                  Timestamp
+                </h3>
                 <p>{isPending ? "Pending" : formatTimestamp(tx.timestamp)}</p>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Value</h3>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                  Total Value
+                </h3>
                 <p>{formatNumber(tx.total / 100000000)} AEGS</p>
               </div>
             </div>
             <div className="space-y-4">
               {tx.tx_type && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Type</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                    Type
+                  </h3>
                   <Badge>{tx.tx_type}</Badge>
                 </div>
               )}
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Confirmations</h3>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                  Confirmations
+                </h3>
                 {isPending ? (
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-amber-500" />
-                    <span className="text-amber-600 dark:text-amber-400">Unconfirmed</span>
+                    <span className="text-amber-600 dark:text-amber-400">
+                      Unconfirmed
+                    </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
@@ -138,13 +176,20 @@ export default async function TransactionPage({ params }) {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="text-right">{formatNumber(input.amount / 100000000)} AEGS</TableCell>
+                      <TableCell className="text-right">
+                        {formatNumber(input.amount / 100000000)} AEGS
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={2} className="text-center py-4 text-muted-foreground">
-                      {isPending ? "Input information not available for pending transactions" : "No inputs found"}
+                    <TableCell
+                      colSpan={2}
+                      className="text-center py-4 text-muted-foreground"
+                    >
+                      {isPending
+                        ? "Input information not available for pending transactions"
+                        : "No inputs found"}
                     </TableCell>
                   </TableRow>
                 )}
@@ -184,13 +229,20 @@ export default async function TransactionPage({ params }) {
                           <AddressTag address={output.addresses} />
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">{formatNumber(output.amount / 100000000)} AEGS</TableCell>
+                      <TableCell className="text-right">
+                        {formatNumber(output.amount / 100000000)} AEGS
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={2} className="text-center py-4 text-muted-foreground">
-                      {isPending ? "Output information not available for pending transactions" : "No outputs found"}
+                    <TableCell
+                      colSpan={2}
+                      className="text-center py-4 text-muted-foreground"
+                    >
+                      {isPending
+                        ? "Output information not available for pending transactions"
+                        : "No outputs found"}
                     </TableCell>
                   </TableRow>
                 )}
@@ -200,5 +252,5 @@ export default async function TransactionPage({ params }) {
         </Card>
       </div>
     </main>
-  )
+  );
 }

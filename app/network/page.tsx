@@ -1,44 +1,64 @@
-export const dynamic = "force-dynamic"
-export const revalidate = 1800 // Revalidate every 30 minutes
+export const dynamic = "force-dynamic";
+export const revalidate = 1800; // Revalidate every 30 minutes
 
-import Link from "next/link"
-import { getNetworkStats, getPeerInfo } from "@/lib/data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowUpRight, Globe, Server, Zap, Network, Clock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+import { getNetworkStats, getPeerInfo } from "@/lib/data";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ArrowUpRight, Globe, Server, Zap, Network, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default async function NetworkPage() {
   // Add error handling for data fetching
-  let networkStats
-  let peerInfo
+  let networkStats;
+  let peerInfo;
 
   try {
-    ;[networkStats, peerInfo] = await Promise.all([getNetworkStats(), getPeerInfo()])
+    [networkStats, peerInfo] = await Promise.all([
+      getNetworkStats(),
+      getPeerInfo(),
+    ]);
   } catch (error) {
-    console.error("Error fetching network data:", error)
+    console.error("Error fetching network data:", error);
     // Provide fallback data
     networkStats = {
       count: 0,
       connections: 0,
       last_updated: Math.floor(Date.now() / 1000),
-    }
-    peerInfo = []
+    };
+    peerInfo = [];
   }
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-7xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Network Information</h1>
-        <p className="text-muted-foreground">Aegisum network nodes and connection information</p>
+        <p className="text-muted-foreground">
+          Aegisum network nodes and connection information
+        </p>
       </div>
 
       {/* Connection Nodes */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Official Connection Nodes</CardTitle>
-          <CardDescription>Connect to these nodes in your Aegisum wallet</CardDescription>
+          <CardDescription>
+            Connect to these nodes in your Aegisum wallet
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -61,7 +81,9 @@ export default async function NetworkPage() {
                   </Badge>
                 </div>
                 <div className="mt-4">
-                  <p className="text-sm text-muted-foreground mb-2">Add to your wallet configuration:</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Add to your wallet configuration:
+                  </p>
                   <div className="bg-muted p-2 rounded-md font-mono text-xs overflow-x-auto">
                     addnode=node.aegisum.com
                   </div>
@@ -80,12 +102,17 @@ export default async function NetworkPage() {
                       <p className="font-medium">node1.aegisum.com</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                  >
                     Backup
                   </Badge>
                 </div>
                 <div className="mt-4">
-                  <p className="text-sm text-muted-foreground mb-2">Add to your wallet configuration:</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Add to your wallet configuration:
+                  </p>
                   <div className="bg-muted p-2 rounded-md font-mono text-xs overflow-x-auto">
                     addnode=node1.aegisum.com
                   </div>
@@ -104,12 +131,17 @@ export default async function NetworkPage() {
                       <p className="font-medium">node2.aegisum.com</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                  >
                     Backup
                   </Badge>
                 </div>
                 <div className="mt-4">
-                  <p className="text-sm text-muted-foreground mb-2">Add to your wallet configuration:</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Add to your wallet configuration:
+                  </p>
                   <div className="bg-muted p-2 rounded-md font-mono text-xs overflow-x-auto">
                     addnode=node2.aegisum.com
                   </div>
@@ -130,7 +162,9 @@ export default async function NetworkPage() {
                     </div>
                     <div>
                       <p className="font-medium">High Availability</p>
-                      <p className="text-xs text-muted-foreground">Multiple nodes for redundancy</p>
+                      <p className="text-xs text-muted-foreground">
+                        Multiple nodes for redundancy
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -139,7 +173,9 @@ export default async function NetworkPage() {
                     </div>
                     <div>
                       <p className="font-medium">Globally Distributed</p>
-                      <p className="text-xs text-muted-foreground">Optimized for low latency</p>
+                      <p className="text-xs text-muted-foreground">
+                        Optimized for low latency
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -148,7 +184,9 @@ export default async function NetworkPage() {
                     </div>
                     <div>
                       <p className="font-medium">24/7 Uptime</p>
-                      <p className="text-xs text-muted-foreground">Continuous monitoring and maintenance</p>
+                      <p className="text-xs text-muted-foreground">
+                        Continuous monitoring and maintenance
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -156,14 +194,30 @@ export default async function NetworkPage() {
             </Card>
 
             <div className="flex flex-col justify-center items-center space-y-3 h-full">
-              <Button variant="outline" className="flex items-center w-full md:w-auto" asChild>
-                <Link href="https://github.com/Aegisum/aegisum-core/releases" target="_blank" rel="noopener noreferrer">
+              <Button
+                variant="outline"
+                className="flex items-center w-full md:w-auto"
+                asChild
+              >
+                <Link
+                  href="https://github.com/Aegisum/aegisum-core/releases"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Download Aegisum Core
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" className="flex items-center w-full md:w-auto" asChild>
-                <Link href="/mining.pdf" target="_blank" rel="noopener noreferrer">
+              <Button
+                variant="outline"
+                className="flex items-center w-full md:w-auto"
+                asChild
+              >
+                <Link
+                  href="/mining.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Mining Guide PDF
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -177,21 +231,29 @@ export default async function NetworkPage() {
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Network Connections</CardTitle>
-          <CardDescription>Current network connection statistics</CardDescription>
+          <CardDescription>
+            Current network connection statistics
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-muted-foreground">Active Connections</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Active Connections
+                  </p>
                   <div className="bg-primary/10 p-2 rounded-full text-primary">
                     <Globe className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-bold">{networkStats.connections}</h3>
-                  <p className="text-xs text-muted-foreground">Current peer connections</p>
+                  <h3 className="text-2xl font-bold">
+                    {networkStats.connections}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Current peer connections
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -199,14 +261,18 @@ export default async function NetworkPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-muted-foreground">Protocol Version</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Protocol Version
+                  </p>
                   <div className="bg-primary/10 p-2 rounded-full text-primary">
                     <Server className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-2xl font-bold">70024</h3>
-                  <p className="text-xs text-muted-foreground">Current protocol version</p>
+                  <p className="text-xs text-muted-foreground">
+                    Current protocol version
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -223,7 +289,9 @@ export default async function NetworkPage() {
                 <Network className="mr-2 h-5 w-5" />
                 Connected Peers
               </CardTitle>
-              <CardDescription>Information about currently connected peers</CardDescription>
+              <CardDescription>
+                Information about currently connected peers
+              </CardDescription>
             </div>
             <Badge variant="outline" className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
@@ -245,16 +313,23 @@ export default async function NetworkPage() {
                 {peerInfo && peerInfo.length > 0 ? (
                   peerInfo.map((peer, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{peer.addr || "Unknown"}</TableCell>
+                      <TableCell className="font-medium">
+                        {peer.addr || "Unknown"}
+                      </TableCell>
                       <TableCell>{peer.version || "Unknown"}</TableCell>
                       <TableCell>
-                        {peer.conntime ? new Date(peer.conntime * 1000).toLocaleString() : "Unknown"}
+                        {peer.conntime
+                          ? new Date(peer.conntime * 1000).toLocaleString()
+                          : "Unknown"}
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
+                    <TableCell
+                      colSpan={3}
+                      className="text-center py-4 text-muted-foreground"
+                    >
                       No peer information available
                     </TableCell>
                   </TableRow>
@@ -265,5 +340,5 @@ export default async function NetworkPage() {
         </CardContent>
       </Card>
     </main>
-  )
+  );
 }

@@ -1,50 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function SearchBar({ className = "", id = "" }) {
-  const [query, setQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const router = useRouter()
+  const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const router = useRouter();
 
   const handleSearch = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!query.trim()) return
+    if (!query.trim()) return;
 
-    setIsSearching(true)
+    setIsSearching(true);
 
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`)
-      const data = await response.json()
+      const response = await fetch(
+        `/api/search?q=${encodeURIComponent(query.trim())}`,
+      );
+      const data = await response.json();
 
       if (response.ok) {
         switch (data.type) {
           case "transaction":
-            router.push(`/tx/${data.id}`)
-            break
+            router.push(`/tx/${data.id}`);
+            break;
           case "address":
-            router.push(`/address/${data.id}`)
-            break
+            router.push(`/address/${data.id}`);
+            break;
           case "block":
-            router.push(`/block/${data.id}`)
-            break
+            router.push(`/block/${data.id}`);
+            break;
           case "notfound":
             // Could show a toast notification here
-            console.log("No results found")
-            break
+            console.log("No results found");
+            break;
         }
       }
     } catch (error) {
-      console.error("Search error:", error)
+      console.error("Search error:", error);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSearch} className={`relative ${className}`}>
@@ -67,5 +69,5 @@ export function SearchBar({ className = "", id = "" }) {
         <span className="sr-only">Search</span>
       </Button>
     </form>
-  )
+  );
 }

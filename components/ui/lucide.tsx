@@ -1,6 +1,9 @@
-"use client"
+"use client";
 
-import { type LightbulbIcon as LucideProps, ImagesIcon as icons } from "lucide-react"
+import {
+  type LightbulbIcon as LucideProps,
+  ImagesIcon as icons,
+} from "lucide-react";
 
 export const Icons = {
   ...icons,
@@ -22,4 +25,4 @@ export const Icons = {
       <path d="m10 4 4 4" />
     </svg>
   ),
-}
+};

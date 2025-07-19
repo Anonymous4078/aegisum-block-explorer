@@ -12,10 +12,10 @@ module.exports = {
         RPC_PORT: "39940",
         RPC_USER: "clyntor1",
         RPC_PASS: "clyntor1",
-        SYNC_INTERVAL: "60000"
+        SYNC_INTERVAL: "60000",
       },
       max_memory_restart: "1G",
-      restart_delay: 10000
-    }
-  ]
+      restart_delay: 10000,
+    },
+  ],
 };

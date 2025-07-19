@@ -1,73 +1,98 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { formatNumber, formatHash, timeAgo } from "@/lib/utils"
-import { getAddressInfo, getPaginatedAddressTransactions, getTransactionById } from "@/lib/data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { ArrowDownToLine, ArrowUpFromLine, Wallet, RefreshCw } from "lucide-react"
-import { Pagination } from "@/components/pagination"
-import { AddressTag } from "@/components/address-tag"
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { formatNumber, formatHash, timeAgo } from "@/lib/utils";
+import {
+  getAddressInfo,
+  getPaginatedAddressTransactions,
+  getTransactionById,
+} from "@/lib/data";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  Wallet,
+  RefreshCw,
+} from "lucide-react";
+import { Pagination } from "@/components/pagination";
+import { AddressTag } from "@/components/address-tag";
 
 export default async function AddressPage({ params, searchParams }) {
-  const { address } = params
-  const page = Number(searchParams.page) || 1
+  const { address } = params;
+  const page = Number(searchParams.page) || 1;
 
-  const addressInfo = await getAddressInfo(address)
+  const addressInfo = await getAddressInfo(address);
 
   if (!addressInfo) {
-    notFound()
+    notFound();
   }
 
-  const { transactions, pagination } = await getPaginatedAddressTransactions(address, page)
+  const { transactions, pagination } = await getPaginatedAddressTransactions(
+    address,
+    page,
+  );
 
   // Enrich transactions with full details and calculate correct amounts
   const enrichedTransactions = await Promise.all(
     transactions.map(async (tx) => {
-      const fullTx = await getTransactionById(tx.txid)
+      const fullTx = await getTransactionById(tx.txid);
 
       if (!fullTx) {
         return {
           ...tx,
           type: tx.amount > 0 ? "received" : "sent",
           displayAmount: Math.abs(tx.amount),
-        }
+        };
       }
 
       // Calculate total amounts for this address in this transaction
-      let totalSent = 0
-      let totalReceived = 0
+      let totalSent = 0;
+      let totalReceived = 0;
 
       // Sum all inputs from this address
       if (fullTx.vin && Array.isArray(fullTx.vin)) {
         fullTx.vin.forEach((input) => {
           if (input.addresses === address) {
-            totalSent += input.amount || 0
+            totalSent += input.amount || 0;
           }
-        })
+        });
       }
 
       // Sum all outputs to this address
       if (fullTx.vout && Array.isArray(fullTx.vout)) {
         fullTx.vout.forEach((output) => {
           if (output.addresses === address) {
-            totalReceived += output.amount || 0
+            totalReceived += output.amount || 0;
           }
-        })
+        });
       }
 
       // Determine transaction type and net amount
-      let type = "received"
-      let displayAmount = totalReceived
+      let type = "received";
+      let displayAmount = totalReceived;
 
       if (totalSent > 0 && totalReceived > 0) {
         // Self-send transaction
-        type = "self"
-        displayAmount = totalReceived - totalSent
+        type = "self";
+        displayAmount = totalReceived - totalSent;
       } else if (totalSent > 0) {
         // Sent transaction
-        type = "sent"
-        displayAmount = totalSent
+        type = "sent";
+        displayAmount = totalSent;
       }
 
       return {
@@ -75,9 +100,9 @@ export default async function AddressPage({ params, searchParams }) {
         type,
         displayAmount: Math.abs(displayAmount),
         netAmount: totalReceived - totalSent, // Keep track of net amount for display logic
-      }
+      };
     }),
-  )
+  );
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-7xl">
@@ -93,13 +118,17 @@ export default async function AddressPage({ params, searchParams }) {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-muted-foreground">Balance</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                Balance
+              </p>
               <div className="bg-primary/10 p-2 rounded-full text-primary">
                 <Wallet className="h-5 w-5" />
               </div>
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold">{formatNumber(addressInfo.balance / 100000000)} AEGS</h3>
+              <h3 className="text-2xl font-bold">
+                {formatNumber(addressInfo.balance / 100000000)} AEGS
+              </h3>
               <p className="text-xs text-muted-foreground">Current balance</p>
             </div>
           </CardContent>
@@ -108,13 +137,17 @@ export default async function AddressPage({ params, searchParams }) {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-muted-foreground">Received</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                Received
+              </p>
               <div className="bg-green-100 p-2 rounded-full text-green-600 dark:bg-green-900 dark:text-green-400">
                 <ArrowDownToLine className="h-5 w-5" />
               </div>
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold">{formatNumber(addressInfo.received / 100000000)} AEGS</h3>
+              <h3 className="text-2xl font-bold">
+                {formatNumber(addressInfo.received / 100000000)} AEGS
+              </h3>
               <p className="text-xs text-muted-foreground">Total received</p>
             </div>
           </CardContent>
@@ -129,7 +162,9 @@ export default async function AddressPage({ params, searchParams }) {
               </div>
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold">{formatNumber(addressInfo.sent / 100000000)} AEGS</h3>
+              <h3 className="text-2xl font-bold">
+                {formatNumber(addressInfo.sent / 100000000)} AEGS
+              </h3>
               <p className="text-xs text-muted-foreground">Total sent</p>
             </div>
           </CardContent>
@@ -155,7 +190,10 @@ export default async function AddressPage({ params, searchParams }) {
               {enrichedTransactions.map((tx) => (
                 <TableRow key={tx._id}>
                   <TableCell className="font-medium">
-                    <Link href={`/tx/${tx.txid}`} className="text-primary hover:underline">
+                    <Link
+                      href={`/tx/${tx.txid}`}
+                      className="text-primary hover:underline"
+                    >
                       {formatHash(tx.txid, 8)}
                     </Link>
                   </TableCell>
@@ -191,7 +229,13 @@ export default async function AddressPage({ params, searchParams }) {
                         -{formatNumber(tx.displayAmount / 100000000)} AEGS
                       </span>
                     ) : tx.type === "self" ? (
-                      <span className={tx.netAmount >= 0 ? "" : "text-red-600 dark:text-red-400"}>
+                      <span
+                        className={
+                          tx.netAmount >= 0
+                            ? ""
+                            : "text-red-600 dark:text-red-400"
+                        }
+                      >
                         {tx.netAmount >= 0 ? "+" : ""}
                         {formatNumber(Math.abs(tx.netAmount) / 100000000)} AEGS
                       </span>
@@ -206,9 +250,12 @@ export default async function AddressPage({ params, searchParams }) {
             </TableBody>
           </Table>
 
-          <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+          />
         </CardContent>
       </Card>
     </main>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   BarChart2,
   Clock,
@@ -18,68 +18,78 @@ import {
   Newspaper,
   MessageCircle,
   Code,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { SearchBar } from "@/components/search-bar"
-import { useState, useEffect, useRef } from "react"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SearchBar } from "@/components/search-bar";
+import { useState, useEffect, useRef } from "react";
 
 export function MainNav() {
-  const pathname = usePathname()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState(null)
-  const dropdownRefs = useRef({})
+  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRefs = useRef({});
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const isClickInsideDropdown = Object.values(dropdownRefs.current).some((ref) => ref && ref.contains(event.target))
+      const isClickInsideDropdown = Object.values(dropdownRefs.current).some(
+        (ref) => ref && ref.contains(event.target),
+      );
       if (!isClickInsideDropdown) {
-        setOpenDropdown(null)
+        setOpenDropdown(null);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setIsMobileMenuOpen(false)
-    setOpenDropdown(null)
-  }, [pathname])
+    setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
+  }, [pathname]);
 
   const explorerRoutes = [
     { href: "/blocks", label: "Blocks", icon: <Layers className="h-4 w-4" /> },
-    { href: "/transactions", label: "Transactions", icon: <List className="h-4 w-4" /> },
+    {
+      href: "/transactions",
+      label: "Transactions",
+      icon: <List className="h-4 w-4" />,
+    },
     { href: "/mempool", label: "Mempool", icon: <Clock className="h-4 w-4" /> },
     { href: "/mining", label: "Mining", icon: <Pickaxe className="h-4 w-4" /> },
-    { href: "/richlist", label: "Rich List", icon: <BarChart2 className="h-4 w-4" /> },
+    {
+      href: "/richlist",
+      label: "Rich List",
+      icon: <BarChart2 className="h-4 w-4" />,
+    },
     { href: "/network", label: "Network", icon: <Globe className="h-4 w-4" /> },
     { href: "/api", label: "API", icon: <Code className="h-4 w-4" /> },
-  ]
+  ];
 
   const toggleDropdown = (dropdownName, e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+  };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-    setOpenDropdown(null)
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setOpenDropdown(null);
     if (!isMobileMenuOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset"
+      document.body.style.overflow = "unset";
     }
-  }
+  };
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [])
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   return (
     <>
@@ -88,7 +98,12 @@ export function MainNav() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
-              <Image src="/logo.png" alt="Aegisum Logo" width={32} height={32} />
+              <Image
+                src="/logo.png"
+                alt="Aegisum Logo"
+                width={32}
+                height={32}
+              />
               <div className="flex items-center space-x-1">
                 <span className="font-bold text-xl text-white">AEGS</span>
                 <span className="text-blue-400 font-medium">Explorer</span>
@@ -106,7 +121,10 @@ export function MainNav() {
               </Link>
 
               {/* Explorer Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current.explorer = el)}>
+              <div
+                className="relative"
+                ref={(el) => (dropdownRefs.current.explorer = el)}
+              >
                 <button
                   onClick={(e) => toggleDropdown("explorer", e)}
                   className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
@@ -120,7 +138,9 @@ export function MainNav() {
                     <Link
                       href="/"
                       className={`flex items-center space-x-3 px-4 py-2 text-sm hover:bg-slate-700/50 transition-colors border-b border-slate-600/30 mb-1 ${
-                        pathname === "/" ? "text-blue-400 bg-slate-700/50" : "text-gray-300 hover:text-white"
+                        pathname === "/"
+                          ? "text-blue-400 bg-slate-700/50"
+                          : "text-gray-300 hover:text-white"
                       }`}
                       onClick={() => setOpenDropdown(null)}
                     >
@@ -132,7 +152,9 @@ export function MainNav() {
                         key={route.href}
                         href={route.href}
                         className={`flex items-center space-x-3 px-4 py-2 text-sm hover:bg-slate-700/50 transition-colors ${
-                          pathname === route.href ? "text-blue-400 bg-slate-700/50" : "text-gray-300 hover:text-white"
+                          pathname === route.href
+                            ? "text-blue-400 bg-slate-700/50"
+                            : "text-gray-300 hover:text-white"
                         }`}
                         onClick={() => setOpenDropdown(null)}
                       >
@@ -145,7 +167,10 @@ export function MainNav() {
               </div>
 
               {/* Other Explorers Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current.explorers = el)}>
+              <div
+                className="relative"
+                ref={(el) => (dropdownRefs.current.explorers = el)}
+              >
                 <button
                   onClick={(e) => toggleDropdown("explorers", e)}
                   className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
@@ -176,7 +201,10 @@ export function MainNav() {
               </div>
 
               {/* Faucets Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current.faucets = el)}>
+              <div
+                className="relative"
+                ref={(el) => (dropdownRefs.current.faucets = el)}
+              >
                 <button
                   onClick={(e) => toggleDropdown("faucets", e)}
                   className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
@@ -215,7 +243,10 @@ export function MainNav() {
               </div>
 
               {/* Exchanges Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current.exchanges = el)}>
+              <div
+                className="relative"
+                ref={(el) => (dropdownRefs.current.exchanges = el)}
+              >
                 <button
                   onClick={(e) => toggleDropdown("exchanges", e)}
                   className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
@@ -263,7 +294,10 @@ export function MainNav() {
               </a>
 
               {/* Wallets Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current.wallets = el)}>
+              <div
+                className="relative"
+                ref={(el) => (dropdownRefs.current.wallets = el)}
+              >
                 <button
                   onClick={(e) => toggleDropdown("wallets", e)}
                   className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
@@ -315,7 +349,11 @@ export function MainNav() {
                 onClick={toggleMobileMenu}
                 className="text-white hover:bg-slate-800/50"
               >
-                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isMobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </Button>
             </div>
           </div>
@@ -330,7 +368,10 @@ export function MainNav() {
       {/* Mobile Navigation Overlay - WITH REACT ICONS */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={toggleMobileMenu} />
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={toggleMobileMenu}
+          />
           <div className="fixed top-16 left-0 right-0 bottom-0 bg-[#0b0f1a] flex flex-col">
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto">
@@ -363,7 +404,9 @@ export function MainNav() {
                       <Link
                         href="/"
                         className={`flex items-center space-x-3 text-base ${
-                          pathname === "/" ? "text-blue-400" : "text-gray-300 hover:text-white"
+                          pathname === "/"
+                            ? "text-blue-400"
+                            : "text-gray-300 hover:text-white"
                         }`}
                         onClick={toggleMobileMenu}
                       >
@@ -375,7 +418,9 @@ export function MainNav() {
                           key={route.href}
                           href={route.href}
                           className={`flex items-center space-x-3 text-base ${
-                            pathname === route.href ? "text-blue-400" : "text-gray-300 hover:text-white"
+                            pathname === route.href
+                              ? "text-blue-400"
+                              : "text-gray-300 hover:text-white"
                           }`}
                           onClick={toggleMobileMenu}
                         >
@@ -452,5 +497,5 @@ export function MainNav() {
         </div>
       )}
     </>
-  )
+  );
 }

@@ -11,7 +11,7 @@ type KnownAddress = {
   description?: string;
   url?: string;
   type: "dev" | "pool" | "exchange" | "service" | "team" | "other";
-}
+};
 
 // List of known addresses
 export const knownAddresses: KnownAddress[] = [
@@ -69,15 +69,15 @@ export const knownAddresses: KnownAddress[] = [
     description: "Mining Pool",
     url: "https://hulkhash.uk/",
     type: "pool",
-  },  
-]
+  },
+];
 
 // Map for quick lookups
-export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.reduce<Record<string, KnownAddress>>((acc, addr) => {
-    acc[addr.address] = addr
-    return acc
-  },
-)
+export const knownAddressesMap: Record<string, KnownAddress> =
+  knownAddresses.reduce<Record<string, KnownAddress>>((acc, addr) => {
+    acc[addr.address] = addr;
+    return acc;
+  });
 
 /**
  * Check if an address is known and return its information
@@ -85,7 +85,7 @@ export const knownAddressesMap: Record<string, KnownAddress> = knownAddresses.re
  * @returns The known address information or null if not found
  */
 export function getKnownAddress(address: string): KnownAddress | null {
-  return knownAddressesMap[address] || null
+  return knownAddressesMap[address] || null;
 }
 
 /**
@@ -94,5 +94,5 @@ export function getKnownAddress(address: string): KnownAddress | null {
  * @returns The tag or null if not a known address
  */
 export function getAddressTag(address: string): string | null {
-  return knownAddressesMap[address]?.tag || null
+  return knownAddressesMap[address]?.tag || null;
 }
