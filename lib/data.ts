@@ -9,7 +9,7 @@ const RPC_PASS = process.env.RPC_PASS ?? "rpcpassword"
 const RPC_URL = `http://${RPC_USER}:${RPC_PASS}@${RPC_HOST}:${RPC_PORT}`
 
 // Helper function to make RPC calls
-export async function rpcCall(method, params = []) {
+export async function rpcCall<T extends unknown = unknown>(method, params = []): Promise<T> {
   try {
     const response = await axios.post(RPC_URL, {
       jsonrpc: "1.0",
@@ -835,18 +835,18 @@ export async function getMiningStats() {
 
   return {
     blocks: currentBlock,
-    difficulty: difficulty,
-    networkhashps: networkhashps,
-    currentReward: currentReward,
-    nextHalvingHeight: nextHalvingHeight,
-    blocksUntilHalving: blocksUntilHalving,
-    daysUntilHalving: daysUntilHalving,
-    halvingSchedule: halvingSchedule,
-    maxSupply: maxSupply,
+    difficulty,
+    networkhashps,
+    currentReward,
+    nextHalvingHeight,
+    blocksUntilHalving,
+    daysUntilHalving,
+    halvingSchedule,
+    maxSupply,
     currentSupply: coinStats.supply, // Use the supply from coinStats
-    blockTime: blockTime,
+    blockTime,
     retargetInterval: 3, // Difficulty retargets every 3 blocks
-    specialBlocks: specialBlocks,
+    specialBlocks,
   }
 }
 
@@ -1090,13 +1090,8 @@ export async function getPeerInfo() {
     }
 
     // If not in database, try direct RPC call
-    try {
-      const peers = await rpcCall("getpeerinfo")
-      return peers
-    } catch (error) {
-      console.error("Error fetching peer info from RPC:", error)
-      return []
-    }
+    const peers = await rpcCall("getpeerinfo")
+    return peers
   } catch (error) {
     console.error("Error fetching peer info:", error)
     return []
