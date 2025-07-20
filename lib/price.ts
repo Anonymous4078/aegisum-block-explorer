@@ -42,20 +42,15 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    /*interface TickerResponse {
-  price: number;
-  symbol: string;
-}*/
-
-// Type guard to validate runtime structure
+   // Type guard to validate runtime structure
 function isTickerResponse(obj: unknown): obj is TickerResponse {
   return (
     typeof obj === "object" &&
     obj !== null &&
     "price" in obj &&
-    "symbol" in obj 
-  //  typeof (obj as any).price === "number" &&
- //   typeof (obj as any).symbol === "string"
+    "symbol" in obj &&
+    typeof "price" in obj === "number" &&
+    typeof "symbol" in obj === "string"
   );
 }
 
@@ -66,10 +61,6 @@ if (!isTickerResponse(json)) {
 }
 
 const data: TickerResponse = json;
-
-//console.log(data.price, data.symbol); // Safe member access
-    
-  //  const data = (await response.json()) satisfies TickerResponse;
 
     if (data.success && data.price) {
       // Update cache
