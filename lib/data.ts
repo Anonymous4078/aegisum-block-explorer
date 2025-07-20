@@ -312,7 +312,7 @@ export async function getNetworkStats() {
 }
 
 // Enhanced error handling for getLatestBlocks
-export async function getLatestBlocks(limit = 10) {
+export async function getLatestBlocks(limit: number = 10): Promise<BlockSummary[]> {
   try {
     const { db } = await connectToDatabase();
 
@@ -372,7 +372,7 @@ export async function getLatestBlocks(limit = 10) {
   }
 }
 
-export async function getRecentTransactions(limit = 10) {
+export async function getRecentTransactions(limit: number = 10): Promise<Transaction[]> {
   try {
     const { db } = await connectToDatabase();
 
@@ -391,7 +391,7 @@ export async function getRecentTransactions(limit = 10) {
   }
 }
 
-export async function getBlockByHash(hash) {
+export async function getBlockByHash(hash: string): Promise<Block> {
   const { db } = await connectToDatabase();
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
@@ -412,7 +412,7 @@ export async function getBlockByHash(hash) {
 
   // Construct a block object
   const block = {
-    hash: hash,
+    hash,
     height: blockHeight,
     previousblockhash: previousBlock ? previousBlock.blockhash : null,
     timestamp: transactions[0].timestamp,
@@ -438,7 +438,7 @@ export async function getBlockByHash(hash) {
   return block;
 }
 
-export async function getNextBlockHash(currentHeight) {
+export async function getNextBlockHash(currentHeight: number): string | null {
   try {
     const { db } = await connectToDatabase();
 
@@ -448,7 +448,9 @@ export async function getNextBlockHash(currentHeight) {
       .findOne({ height: currentHeight + 1 });
 
     // If not found in blocks collection, try to find in txes
-    if (!nextBlock) {
+    if (nextBlock) {
+            return nextBlock.hash;
+    } else {
       const nextBlockTx = await db
         .collection<Transaction>("txes")
         .findOne({ blockindex: currentHeight + 1 }, { sort: { timestamp: 1 } });
@@ -456,9 +458,7 @@ export async function getNextBlockHash(currentHeight) {
       if (nextBlockTx) {
         return nextBlockTx.blockhash;
       }
-    } else {
-      return nextBlock.hash;
-    }
+    } 
 
     return null;
   } catch (error) {
@@ -467,7 +467,7 @@ export async function getNextBlockHash(currentHeight) {
   }
 }
 
-export async function getTransactionsByBlockHash(hash) {
+export async function getTransactionsByBlockHash(hash: string): Promise<Transactions[]> {
   const { db } = await connectToDatabase();
 
   const transactions = await db
@@ -478,7 +478,7 @@ export async function getTransactionsByBlockHash(hash) {
   return transactions;
 }
 
-export async function getTransactionById(txid) {
+export async function getTransactionById(txid: string) {
   const { db } = await connectToDatabase();
 
   // First check in confirmed transactions
@@ -585,7 +585,7 @@ export async function getTransactionById(txid) {
 }
 
 // Helper function to get raw transaction data from RPC
-async function getRawTransaction(txid) {
+async function getRawTransaction(txid: string): Promise<RawTransaction> {
   try {
     // Use the getrawtransaction RPC command with verbose=1 to get detailed transaction info
     const rawTx = await rpcCall<RawTransaction>("getrawtransaction", [txid, 1]);
