@@ -312,9 +312,7 @@ export async function getNetworkStats() {
 }
 
 // Enhanced error handling for getLatestBlocks
-export async function getLatestBlocks(
-  limit: number = 10,
-): Promise<BlockSummary[]> {
+export async function getLatestBlocks(limit = 10): Promise<BlockSummary[]> {
   try {
     const { db } = await connectToDatabase();
 
@@ -374,9 +372,7 @@ export async function getLatestBlocks(
   }
 }
 
-export async function getRecentTransactions(
-  limit: number = 10,
-): Promise<Transaction[]> {
+export async function getRecentTransactions(limit = 10): Promise<Transaction[]> {
   try {
     const { db } = await connectToDatabase();
 
