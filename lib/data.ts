@@ -194,34 +194,34 @@ type Peer = {
 
 type PeerInfo = Peer[];
 
-type RawMempool = {
-  [txid: string]: {
-    vsize: number;
-    weight: number;
-    fee?: number; // Deprecated
-    modifiedfee?: number; // Deprecated
-    time: number;
-    height: number;
-    descendantcount: number;
-    descendantsize: number;
-    descendantfees?: number; // Deprecated
-    ancestorcount: number;
-    ancestorsize: number;
-    ancestorfees?: number; // Deprecated
-    wtxid: string;
-    fees: {
-      base: number;
-      modified: number;
-      ancestor: number;
-      descendant: number;
-    };
-    depends: string[];
-    spentby: string[];
-    "bip125-replaceable": boolean;
-    unbroadcast: boolean;
-  };
+type RawMempoolEntry = {
+  vsize: number;
+  weight: number;
+  fee?: number; // Deprecated
+  modifiedfee?: number; // Deprecated
+  time: number;
+  height: number;
+  descendantcount: number;
+  descendantsize: number;
+  descendantfees?: number; // Deprecated
+  ancestorcount: number;
+  ancestorsize: number;
+  ancestorfees?: number; // Deprecated
+  wtxid: string;
+  fees: {
+    base: number;
+    modified: number;
+    ancestor: number;
+    descendant: number;
+  };
+  depends: string[];
+  spentby: string[];
+  "bip125-replaceable": boolean;
+  unbroadcast: boolean;
 };
 
+type RawMempool = Record<string, RawMempoolEntry>;
+  
 type TxInput = {
   coinbase?: string;
   txid?: string;
