@@ -141,12 +141,13 @@ type MempoolInfo = {
 type Peer = {
   id: number;
   addr: string;
-  addrbind: string;
-  addrlocal: string;
-  mapped_as: number;
+  addrbind?: string;
+  addrlocal?: string;
+  network: string;
+  mapped_as?: number;
   services: string;
   servicesnames: string[];
-  relaytxes: boolean;
+  relaytxes?: boolean;
   lastsend: number;
   lastrecv: number;
   last_transaction: number;
@@ -155,31 +156,60 @@ type Peer = {
   bytesrecv: number;
   conntime: number;
   timeoffset: number;
-  pingtime: number;
-  minping: number;
-  pingwait: number;
+  pingtime?: number;
+  minping?: number;
+  pingwait?: number;
   version: number;
   subver: string;
   inbound: boolean;
-  addnode: boolean;
+  addnode?: boolean;
   connection_type: string;
-  startingheight: number;
-  banscore: number;
-  synced_headers: number;
-  synced_blocks: number;
-  inflight: number[];
-  whitelisted: boolean;
+  startingheight?: number;
+  banscore?: number;
+  synced_headers?: number;
+  synced_blocks?: number;
+  presynced_headers?: number;
+  inflight?: number[];
+  addr_relay_enabled?: boolean;
+  addr_processed?: number;
+  addr_rate_limited?: number;
   permissions: string[];
-  minfeefilter: number;
-  bytessent_per_msg: {
-    msg: number;
-  };
-  bytesrecv_per_msg: {
-    msg: number;
-  };
-};
+  minfeefilter?: number;
+  bytessent_per_msg: Record<string, number>;
+  bytesrecv_per_msg: Record<string, number>;
+  bip152_hb_to?: boolean;
+  bip152_hb_from?: boolean;
+}
 
 type PeerInfo = Peer[];
+
+type RawMempool = {
+  [txid: string]: {
+    vsize: number;
+    weight: number;
+    fee?: number; // Deprecated
+    modifiedfee?: number; // Deprecated
+    time: number;
+    height: number;
+    descendantcount: number;
+    descendantsize: number;
+    descendantfees?: number; // Deprecated
+    ancestorcount: number;
+    ancestorsize: number;
+    ancestorfees?: number; // Deprecated
+    wtxid: string;
+    fees: {
+      base: number;
+      modified: number;
+      ancestor: number;
+      descendant: number;
+    };
+    depends: string[];
+    spentby: string[];
+    "bip125-replaceable": boolean;
+    unbroadcast: boolean;
+  };
+};
 
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
@@ -615,7 +645,7 @@ export async function getMempoolTransactions() {
       };
 
       // Try to get detailed mempool transactions
-      const rawMempool = await rpcCall("getrawmempool", [true]);
+      const rawMempool = await rpcCall<RawMempool>("getrawmempool", [true]);
 
       if (rawMempool && typeof rawMempool === "object") {
         // Convert the raw mempool object to an array of transactions
@@ -657,7 +687,7 @@ export async function getMempoolTransactions() {
           if (rawTx.vout && Array.isArray(rawTx.vout)) {
             for (const output of rawTx.vout) {
               const addresses = output.scriptPubKey?.addresses ?? [];
-              const amount = Math.round((output.value ?. 0) * 10_00_00_000); // Convert to satoshis
+              const amount = Math.round((output.value ?? 0) * 10_00_00_000); // Convert to satoshis
 
               if (addresses.length > 0) {
                 vout.push({
