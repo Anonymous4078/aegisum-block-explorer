@@ -9,10 +9,10 @@ const rpcPass = process.env.RPC_PASS ?? "rpcpassword";
 const rpcUrl = `http://${rpcUser}:${rpcPass}@${rpcHost}:${rpcPort}`;
 
 type RpcResponse<T> = {
-  result: T;
-  error: unknown | null;
-  id: number;
-}
+  result: T;
+  error: unknown | null;
+  id: number;
+};
 
 // Helper function to make RPC calls
 export async function rpcCall<T>(method: string, params = []): Promise<T> {
@@ -190,38 +190,38 @@ type Peer = {
   bytesrecv_per_msg: Record<string, number>;
   bip152_hb_to?: boolean;
   bip152_hb_from?: boolean;
-}
+};
 
 type PeerInfo = Peer[];
 
 type RawMempoolEntry = {
-  vsize: number;
-  weight: number;
-  fee?: number; // Deprecated
-  modifiedfee?: number; // Deprecated
-  time: number;
-  height: number;
-  descendantcount: number;
-  descendantsize: number;
-  descendantfees?: number; // Deprecated
-  ancestorcount: number;
-  ancestorsize: number;
-  ancestorfees?: number; // Deprecated
-  wtxid: string;
-  fees: {
-    base: number;
-    modified: number;
-    ancestor: number;
-    descendant: number;
-  };
-  depends: string[];
-  spentby: string[];
-  "bip125-replaceable": boolean;
-  unbroadcast: boolean;
+  vsize: number;
+  weight: number;
+  fee?: number; // Deprecated
+  modifiedfee?: number; // Deprecated
+  time: number;
+  height: number;
+  descendantcount: number;
+  descendantsize: number;
+  descendantfees?: number; // Deprecated
+  ancestorcount: number;
+  ancestorsize: number;
+  ancestorfees?: number; // Deprecated
+  wtxid: string;
+  fees: {
+    base: number;
+    modified: number;
+    ancestor: number;
+    descendant: number;
+  };
+  depends: string[];
+  spentby: string[];
+  "bip125-replaceable": boolean;
+  unbroadcast: boolean;
 };
 
 type RawMempool = Record<string, RawMempoolEntry>;
-  
+
 type TxInput = {
   coinbase?: string;
   txid?: string;
@@ -259,7 +259,7 @@ type RawTransaction = {
   confirmations?: number;
   blocktime?: number;
   time?: number;
-}
+};
 
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
@@ -312,7 +312,9 @@ export async function getNetworkStats() {
 }
 
 // Enhanced error handling for getLatestBlocks
-export async function getLatestBlocks(limit: number = 10): Promise<BlockSummary[]> {
+export async function getLatestBlocks(
+  limit: number = 10,
+): Promise<BlockSummary[]> {
   try {
     const { db } = await connectToDatabase();
 
@@ -372,7 +374,9 @@ export async function getLatestBlocks(limit: number = 10): Promise<BlockSummary[
   }
 }
 
-export async function getRecentTransactions(limit: number = 10): Promise<Transaction[]> {
+export async function getRecentTransactions(
+  limit: number = 10,
+): Promise<Transaction[]> {
   try {
     const { db } = await connectToDatabase();
 
@@ -449,7 +453,7 @@ export async function getNextBlockHash(currentHeight: number): string | null {
 
     // If not found in blocks collection, try to find in txes
     if (nextBlock) {
-            return nextBlock.hash;
+      return nextBlock.hash;
     } else {
       const nextBlockTx = await db
         .collection<Transaction>("txes")
@@ -458,7 +462,7 @@ export async function getNextBlockHash(currentHeight: number): string | null {
       if (nextBlockTx) {
         return nextBlockTx.blockhash;
       }
-    } 
+    }
 
     return null;
   } catch (error) {
@@ -467,7 +471,9 @@ export async function getNextBlockHash(currentHeight: number): string | null {
   }
 }
 
-export async function getTransactionsByBlockHash(hash: string): Promise<Transactions[]> {
+export async function getTransactionsByBlockHash(
+  hash: string,
+): Promise<Transactions[]> {
   const { db } = await connectToDatabase();
 
   const transactions = await db
@@ -491,7 +497,9 @@ export async function getTransactionById(txid: string) {
   }
 
   // If not found, check in mempool
-  const mempoolTx = await db.collection<MempoolTransaction>("mempool").findOne({ txid });
+  const mempoolTx = await db
+    .collection<MempoolTransaction>("mempool")
+    .findOne({ txid });
 
   if (mempoolTx) {
     try {
@@ -1468,7 +1476,9 @@ export async function getDifficultyHistory(limit = 50) {
     const difficultyData = [];
 
     for (const height of blockHeights) {
-      const tx = await db.collection<Transaction>("txes").findOne({ blockindex: height });
+      const tx = await db
+        .collection<Transaction>("txes")
+        .findOne({ blockindex: height });
       if (tx) {
         // Get difficulty from network history closest to this block
         const networkData = await db
