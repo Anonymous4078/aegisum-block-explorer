@@ -32,6 +32,14 @@ export async function rpcCall<T>(
   }
 }
 
+// MongoDB collection types
+type Address = {
+  a_id: string;
+        balance: number;
+        received: number;
+        sent: number;
+}
+
 type Block = {
   difficulty: number;
   hash: string;
@@ -79,6 +87,13 @@ type MempoolStats = {
   timestamp: number;
 }
 
+type MempoolTransactions= {
+  txid: string;
+        size: number ;
+        time: number;
+        height: number;
+}
+
 type Transaction = {
   txid: string;
   blockhash: string;
@@ -113,7 +128,6 @@ type MempoolInfo = {
   unbroadcastcount : number;
 }
 
-
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
@@ -137,7 +151,7 @@ export async function getNetworkStats() {
 
     // Get the latest network history for current difficulty and hashrate
     const latestNetworkHistory = await db
-      .collection("networkhistories")
+      .collection<NetworkHistory>("networkhistories")
       .findOne({}, { sort: { timestamp: -1 } });
 
     return {
@@ -451,7 +465,7 @@ export async function getAddressInfo(address) {
   const { db } = await connectToDatabase();
 
   const addressInfo = await db
-    .collection("addresses")
+    .collection<Address>("addresses")
     .findOne({ a_id: address });
 
   return addressInfo;
@@ -488,7 +502,7 @@ export async function getRichList(limit = 100) {
   const { db } = await connectToDatabase();
 
   const addresses = await db
-    .collection("addresses")
+    .collection<Address>("addresses")
     .find({})
     .sort({ balance: -1 })
     .limit(limit)
@@ -517,7 +531,7 @@ export async function getMempoolTransactions() {
   try {
     // Get mempool transactions from database
     const dbTransactions = await db
-      .collection("mempool")
+      .collection<MempoolTransaction>("mempool")
       .find({})
       .sort({ time: -1 })
       .toArray();
@@ -649,9 +663,9 @@ export async function getMempoolTransactions() {
     // Ensure all transactions have the required fields
     const finalTransactions = enrichedTransactions.map((tx) => ({
       ...tx,
-      txid: tx.txid || "",
-      size: tx.size || 0,
-      time: tx.time || Math.floor(Date.now() / 1000),
+      txid: tx.txid ?? "",
+      size: tx.size ?? 0,
+      time: tx.time ?? Math.floor(Date.now() / 1000),
     }));
 
     return { transactions: finalTransactions, stats };
@@ -670,7 +684,7 @@ export async function getMiningStats() {
   const { db } = await connectToDatabase();
 
   // Get current blockchain info
-  const coinStats = await db.collection("coinstats").findOne({});
+  const coinStats = await db.collection<CoinStats>("coinstats").findOne({});
   const currentBlock = coinStats.count;
 
   // Get latest network history for current difficulty and hashrate
@@ -689,7 +703,7 @@ export async function getMiningStats() {
       difficulty = miningInfo.difficulty ?? difficulty;
 
       // Get network hashrate from RPC (120 blocks average)
-      const hashps = await rpcCall("getnetworkhashps", [120, -1]);
+      const hashps = await rpcCall<number>("getnetworkhashps", [120, -1]);
       if (hashps) {
         // Convert to GH/s (RPC returns H/s)
         networkhashps = hashps / 1_00_00_00_000;
@@ -702,9 +716,9 @@ export async function getMiningStats() {
 
   // Aegisum halving parameters
   const blockReward = 500; // Initial block reward is 500 AEGS
-  const halvingInterval = 100000; // Blocks between halvings (every 100k blocks)
+  const halvingInterval = 1_00_000; // Blocks between halvings (every 100k blocks)
   const blockTime = 180; // Target block time in seconds (3 minutes)
-  const maxSupply = 100000000; // 100 million AEGS max supply
+  const maxSupply = 10_00_00_000; // 100 million AEGS max supply
 
   // Calculate current halving cycle
   const currentHalvingCycle = Math.floor(currentBlock / halvingInterval);
@@ -1103,7 +1117,7 @@ export async function getPaginatedBlocks(page = 1, limit = 20) {
 
     // Get distinct block hashes and count for pagination
     const distinctBlockHashes = await db
-      .collection("txes")
+      .collection<Transaction>("txes")
       .distinct("blockhash");
     const totalCount = distinctBlockHashes.length;
     const totalPages = Math.ceil(totalCount / limit);
@@ -1189,7 +1203,7 @@ export async function getPaginatedTransactions(page = 1, limit = 20) {
   const skip = (page - 1) * limit;
 
   const transactions = await db
-    .collection("txes")
+    .collection<Transaction>("txes")
     .find({})
     .sort({ timestamp: -1 })
     .skip(skip)
@@ -1228,7 +1242,7 @@ export async function getPaginatedAddressTransactions(
   const enrichedTxs = [];
 
   for (const tx of addressTxs) {
-    const transaction = await db.collection("txes").findOne({ txid: tx.txid });
+    const transaction = await db.collection<Transaction>("txes").findOne({ txid: tx.txid });
     if (transaction) {
       enrichedTxs.push({
         ...tx,
@@ -1290,7 +1304,7 @@ export async function getDifficultyHistory(limit = 50) {
 
     // If no blocks collection, try to reconstruct from txes
     const latestTxs = await db
-      .collection("txes")
+      .collection<Transaction>("txes")
       .find({})
       .sort({ blockindex: -1 })
       .limit(1)
