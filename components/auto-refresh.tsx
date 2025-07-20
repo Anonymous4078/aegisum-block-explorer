@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-interface AutoRefreshProps {
-  interval?: number; // Refresh interval in seconds
+type AutoRefreshProps = {
+  readonly interval?: number; // Refresh interval in seconds
 }
 
 export function AutoRefresh({ interval = 60 }: AutoRefreshProps) {
@@ -18,7 +18,9 @@ export function AutoRefresh({ interval = 60 }: AutoRefreshProps) {
     }, interval * 1000);
 
     // Clean up on unmount
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+    };
   }, [router, interval]);
 
   // This component doesn't render anything
