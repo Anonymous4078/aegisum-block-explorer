@@ -1,5 +1,5 @@
 // Cache duration in milliseconds (20 minutes)
-const cacheDuration = 20 * 60 * 1000;
+const cacheDuration = 20 * 60 * 1_000;
 
 type PriceCache = {
   price: string;
@@ -42,22 +42,7 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    function isTickerResponse(obj: any): obj is TickerResponse {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    typeof obj.price === "number" && // example condition
-    typeof obj.symbol === "string"   // adjust to your actual shape
-  );
-}
-
-const json = await response.json();
-if (!isTickerResponse(json)) {
-  throw new Error("Invalid TickerResponse format");
-}
-const data: TickerResponse = json;
-    
-   // const data = (await response.json()) as TickerResponse;
+    const data = (await response.json()) satisfies TickerResponse;
 
     if (data.success && data.price) {
       // Update cache
