@@ -6,9 +6,9 @@ export async function GET(request: NextRequest) {
   try {
     // Get client IP
     const ip =
-      request.ip ||
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
+      request.ip ??
+      request.headers.get("x-forwarded-for") ??
+      request.headers.get("x-real-ip") ??
       "unknown";
 
     // Apply rate limiting (60 requests per minute)
