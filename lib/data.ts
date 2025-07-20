@@ -525,10 +525,10 @@ export async function getTransactionById(txid: string) {
               try {
                 // Try to get the previous transaction to get the input amount
                 const prevTx = await getRawTransaction(input.txid);
-                if (prevTx && prevTx.vout && prevTx.vout[input.vout]) {
-                  const prevOutput = prevTx.vout[input.vout];
-                  const addresses = prevOutput.scriptPubKey.addresses ?? [];
-                  const amount = Math.round(prevOutput.value * 10_00_00_000); // Convert to satoshis
+                if (prevTx && prevTx?.vout && prevTx?.vout[input.vout]) {
+                  const prevOutput = prevTx?.vout[input.vout];
+                  const addresses = prevOutput?.scriptPubKey?.addresses ?? [];
+                  const amount = Math.round(prevOutput?.value * 10_00_00_000); // Convert to satoshis
 
                   if (addresses.length > 0) {
                     processedTx.vin.push({
