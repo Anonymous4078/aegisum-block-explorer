@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       "unknown";
 
     // Apply rate limiting (60 requests per minute)
-    if (!rateLimit(ip, 60, 60000)) {
+    if (!rateLimit(ip, 60, 60_000)) {
       return new NextResponse("Rate limit exceeded", {
         status: 429,
         headers: {
