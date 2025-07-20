@@ -19,7 +19,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import type { TooltipProps } from "recharts"; // ✅ Fix: only-import-types
+import type { TooltipProps } from "recharts";
 
 type DifficultyData = {
   blockHeight: number;
@@ -50,7 +50,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     );
   }
 
-  const chartData = data.map((item) => ({
+  const chartData = data.map(item => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
@@ -64,8 +64,8 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
       active &&
       Array.isArray(payload) &&
       payload.length > 0 &&
-      payload[0] &&
-      typeof payload[0].payload === "object"
+      typeof payload[0]?.payload === "object" &&
+      payload[0].payload !== null
     ) {
       const d = payload[0].payload as FormattedDifficultyData;
 
@@ -83,6 +83,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
         </div>
       );
     }
+
     return null;
   }
 
@@ -94,18 +95,24 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
           Difficulty adjustment over the last {data.length} blocks
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              onMouseMove={(e) => {
+              margin={{
+                top: 10,
+                right: 30,
+                left: 0,
+                bottom: 0,
+              }}
+              onMouseMove={e => {
                 if (
-                  e?.activeTooltipIndex !== undefined &&
+                  typeof e?.activeTooltipIndex === "number" &&
                   chartData[e.activeTooltipIndex]
                 ) {
-                  setActivePoint(chartData[e.activeTooltipIndex]);
+                  setActivePoint(chartData[e.activeTooltipIndex] ?? null);
                 }
               }}
               onMouseLeave={() => {
@@ -160,7 +167,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 isAnimationActive={false}
               />
 
-              {activePoint && (
+              {activePoint ? (
                 <ReferenceLine
                   key={activePoint.blockHeight}
                   x={activePoint.blockHeight}
@@ -168,11 +175,11 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                   strokeDasharray="3 3"
                   strokeWidth={1.5}
                 />
-              )}
+              ) : null}
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
   );
-                }
+}
