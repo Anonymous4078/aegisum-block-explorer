@@ -5,9 +5,9 @@ export async function GET(request: NextRequest) {
   try {
     // Get client IP
     const ip =
-      request.ip ||
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
+      request.ip ??
+      request.headers.get("x-forwarded-for") ??
+      request.headers.get("x-real-ip") ??
       "unknown";
 
     // Apply rate limiting (60 requests per minute)
@@ -21,10 +21,10 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Max supply is always 100 million AEGS
-    const maxSupply = 100000000;
+    // Max supply is 100 million AEGS
+    const maxSupply = 10_00_00_000;
 
-    return new NextResponse(maxSupply.toString(), {
+    return new NextResponse(maxSupply, {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error in max-supply API route:", error);
 
-    return new NextResponse("100000000", {
+    return new NextResponse(maxSupply, {
       status: 500,
       headers: {
         "Content-Type": "text/plain",
