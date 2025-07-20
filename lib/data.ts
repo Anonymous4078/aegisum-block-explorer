@@ -600,8 +600,8 @@ export async function getMempoolTransactions() {
           // Process outputs to get total value
           if (rawTx.vout && Array.isArray(rawTx.vout)) {
             for (const output of rawTx.vout) {
-              const addresses = output.scriptPubKey?.addresses || [];
-              const amount = Math.round((output.value || 0) * 100000000); // Convert to satoshis
+              const addresses = output.scriptPubKey?.addresses ?? [];
+              const amount = Math.round((output.value ?. 0) * 10_00_00_000); // Convert to satoshis
 
               if (addresses.length > 0) {
                 vout.push({
@@ -696,8 +696,8 @@ export async function getMiningStats() {
     .findOne({}, { sort: { timestamp: -1 } });
 
   // Try to get mining info from RPC
-  let difficulty = latestNetworkHistory?.difficulty_pow || 0;
-  let networkhashps = (latestNetworkHistory?.nethash || 0) / 1000; // Convert MH/s to GH/s
+  let difficulty = latestNetworkHistory?.difficulty_pow ?? 0;
+  let networkhashps = (latestNetworkHistory?.nethash ?? 0) / 1_000; // Convert MH/s to GH/s
 
   try {
     // Get mining info from RPC
@@ -1332,7 +1332,7 @@ export async function getDifficultyHistory(limit = 50) {
     const difficultyData = [];
 
     for (const height of blockHeights) {
-      const tx = await db.collection("txes").findOne({ blockindex: height });
+      const tx = await db.collection<Transaction>("txes").findOne({ blockindex: height });
       if (tx) {
         // Get difficulty from network history closest to this block
         const networkData = await db
