@@ -1,18 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getNetworkStats } from "@/lib/data";
+import { rpcCall } from "@/lib/data";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   try {
     // Get client IP
     const ip =
-      request.ip ||
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
+      request.ip ??
+      request.headers.get("x-forwarded-for") ??
+      request.headers.get("x-real-ip") ??
       "unknown";
 
     // Apply rate limiting (60 requests per minute)
-    if (!rateLimit(ip, 60, 60000)) {
+    if (!rateLimit(ip, 60, 60_000)) {
       return new NextResponse("Rate limit exceeded", {
         status: 429,
         headers: {
@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const networkStats = await getNetworkStats();
+    const peers = await rpcCall<number>('getconnectioncount');
 
-    return new NextResponse(networkStats.connections, {
+    return new NextResponse(peers, {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
