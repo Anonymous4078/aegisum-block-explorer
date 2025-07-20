@@ -222,6 +222,45 @@ type RawMempool = {
   };
 };
 
+type TxInput = {
+  coinbase?: string;
+  txid?: string;
+  vout?: number;
+  scriptSig?: { asm: string; hex: string };
+  sequence: number;
+  txinwitness?: string[];
+};
+
+type TxOutput = {
+  value: number;
+  n: number;
+  scriptPubKey: {
+    asm: string;
+    hex: string;
+    reqSigs?: number;
+    type: string;
+    addresses?: string[];
+  };
+};
+
+type RawTransaction = {
+  in_active_chain?: boolean;
+  hex: string;
+  txid: string;
+  hash: string;
+  size: number;
+  vsize: number;
+  weight: number;
+  version: number;
+  locktime: number;
+  vin: TxInput[];
+  vout: TxOutput[];
+  blockhash?: string;
+  confirmations?: number;
+  blocktime?: number;
+  time?: number;
+}
+
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
@@ -549,7 +588,7 @@ export async function getTransactionById(txid) {
 async function getRawTransaction(txid) {
   try {
     // Use the getrawtransaction RPC command with verbose=1 to get detailed transaction info
-    const rawTx = await rpcCall("getrawtransaction", [txid, 1]);
+    const rawTx = await rpcCall<RawTransaction>("getrawtransaction", [txid, 1]);
     return rawTx;
   } catch (error) {
     console.error("Error in getRawTransaction:", error);
