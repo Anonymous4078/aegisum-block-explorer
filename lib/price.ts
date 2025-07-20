@@ -42,7 +42,22 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const data = (await response.json()) as TickerResponse;
+    function isTickerResponse(obj: any): obj is TickerResponse {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    typeof obj.price === "number" && // example condition
+    typeof obj.symbol === "string"   // adjust to your actual shape
+  );
+}
+
+const json = await response.json();
+if (!isTickerResponse(json)) {
+  throw new Error("Invalid TickerResponse format");
+}
+const data: TickerResponse = json;
+    
+   // const data = (await response.json()) as TickerResponse;
 
     if (data.success && data.price) {
       // Update cache
