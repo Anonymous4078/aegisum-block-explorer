@@ -610,7 +610,7 @@ export async function getAddressInfo(address) {
   return addressInfo;
 }
 
-export async function getAddressTransactions(address, limit = 25) {
+export async function getAddressTransactions(address: string, limit = 25) {
   const { db } = await connectToDatabase();
 
   // Get transactions involving this address
@@ -746,7 +746,7 @@ export async function getMempoolTransactions() {
               if (addresses.length > 0) {
                 vout.push({
                   addresses: addresses[0],
-                  amount: amount,
+                  amount,
                 });
                 totalValue += amount;
               }
@@ -1360,7 +1360,7 @@ export async function getPaginatedTransactions(page = 1, limit = 20) {
 }
 
 export async function getPaginatedAddressTransactions(
-  address,
+  address: string,
   page = 1,
   limit = 20,
 ) {
