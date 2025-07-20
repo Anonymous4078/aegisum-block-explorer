@@ -18,19 +18,31 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  TooltipProps
 } from "recharts";
 
-interface DifficultyData {
+type DifficultyData = {
   blockHeight: number;
   difficulty: number;
   timestamp: number;
 }
 
-interface DifficultyChartProps {
-  data: DifficultyData[];
+type DifficultyChartProps = {
+  readonly data: DifficultyData[];
 }
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Network Difficulty</CardTitle>
+          <CardDescription>No data available</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+  
   const [activePoint, setActivePoint] = useState<DifficultyData | null>(null);
 
   // Format the data for the chart
@@ -54,7 +66,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
   };
 
   // Custom tooltip component
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -152,6 +164,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
               {activePoint && (
                 <ReferenceLine
                   x={activePoint.blockHeight}
+                  key={activePoint.blockHeight}
                   stroke="#1d4ed8"
                   strokeDasharray="3 3"
                   strokeWidth={1.5}
