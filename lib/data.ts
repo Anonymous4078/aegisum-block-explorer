@@ -589,7 +589,7 @@ export async function getTransactionById(txid: string) {
 }
 
 // Helper function to get raw transaction data from RPC
-async function getRawTransaction(txid: string): Promise<RawTransaction> {
+async function getRawTransaction(txid: string): Promise<RawTransaction> | null {
   try {
     // Use the getrawtransaction RPC command with verbose=1 to get detailed transaction info
     const rawTx = await rpcCall<RawTransaction>("getrawtransaction", [txid, 1]);
