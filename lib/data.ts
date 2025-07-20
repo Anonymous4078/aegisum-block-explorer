@@ -62,6 +62,15 @@ type Block = {
   timestamp: number;
 };
 
+type BlockSummary = {
+  id: string;
+  height: number;
+  hash: string;
+  timestamp: number;
+  txCount: number;
+  minedBy: string | null;
+};
+
 type CoinStats = {
   coin: "Aegisum";
   count: number;
@@ -118,15 +127,6 @@ type Transaction = {
 };
 
 // RPC API Types
-type BlockSummary = {
-  id: string;
-  height: number;
-  hash: string;
-  timestamp: number;
-  txCount: number;
-  minedBy: string | null;
-};
-
 type MempoolInfo = {
   loaded: boolean;
   size: number;
@@ -136,6 +136,17 @@ type MempoolInfo = {
   mempoolminfee: number;
   minrelaytxfee: number;
   unbroadcastcount: number;
+};
+
+type MiningInfo = {
+  blocks: number;
+  currentblockweight?: number;
+  currentblocktx?: number;
+  difficulty: number;
+  networkhashps: number;
+  pooledtx: number;
+  chain: string;
+  warnings: string;
 };
 
 type Peer = {
@@ -787,7 +798,7 @@ export async function getMiningStats() {
 
   try {
     // Get mining info from RPC
-    const miningInfo = await rpcCall("getmininginfo");
+    const miningInfo = await rpcCall<MiningInfo>("getmininginfo");
     if (miningInfo) {
       difficulty = miningInfo.difficulty ?? difficulty;
 
