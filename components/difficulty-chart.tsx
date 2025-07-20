@@ -18,8 +18,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
-  TooltipProps,
 } from "recharts";
+import type { TooltipProps } from "recharts"; // ✅ Fix: only-import-types
 
 type DifficultyData = {
   blockHeight: number;
@@ -50,14 +50,23 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     );
   }
 
-  const chartData = data.map(item => ({
+  const chartData = data.map((item) => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
   }));
 
-  const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
-    if (active && payload?.[0]?.payload) {
+  function CustomTooltip({
+    active,
+    payload,
+  }: TooltipProps<number, string>): JSX.Element | null {
+    if (
+      active &&
+      Array.isArray(payload) &&
+      payload.length > 0 &&
+      payload[0] &&
+      typeof payload[0].payload === "object"
+    ) {
       const d = payload[0].payload as FormattedDifficultyData;
 
       return (
@@ -75,7 +84,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
       );
     }
     return null;
-  };
+  }
 
   return (
     <Card>
@@ -91,9 +100,9 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
             <AreaChart
               data={chartData}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              onMouseMove={e => {
+              onMouseMove={(e) => {
                 if (
-                  e.activeTooltipIndex !== undefined &&
+                  e?.activeTooltipIndex !== undefined &&
                   chartData[e.activeTooltipIndex]
                 ) {
                   setActivePoint(chartData[e.activeTooltipIndex]);
@@ -118,7 +127,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 tickLine={false}
                 axisLine={false}
                 minTickGap={30}
-                tickFormatter={v => `#${v}`}
+                tickFormatter={(v: number) => `#${v}`}
                 className="text-muted-foreground"
               />
 
@@ -126,7 +135,9 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={v => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toFixed(1))}
+                tickFormatter={(v: number) =>
+                  v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toFixed(1)
+                }
                 className="text-muted-foreground"
               />
 
@@ -164,5 +175,4 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
       </CardContent>
     </Card>
   );
-              }
-                
+                }
