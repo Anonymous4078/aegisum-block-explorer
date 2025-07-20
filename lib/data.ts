@@ -9,10 +9,7 @@ const RPC_PASS = process.env.RPC_PASS ?? "rpcpassword";
 const RPC_URL = `http://${RPC_USER}:${RPC_PASS}@${RPC_HOST}:${RPC_PORT}`;
 
 // Helper function to make RPC calls
-export async function rpcCall<T>(
-  method: string,
-  params = [],
-): Promise<T> {
+export async function rpcCall<T>(method: string, params = []): Promise<T> {
   try {
     const response = await axios.post(RPC_URL, {
       jsonrpc: "1.0",
@@ -35,10 +32,10 @@ export async function rpcCall<T>(
 // MongoDB collection types
 type Address = {
   a_id: string;
-        balance: number;
-        received: number;
-        sent: number;
-}
+  balance: number;
+  received: number;
+  sent: number;
+};
 
 type Block = {
   difficulty: number;
@@ -54,23 +51,23 @@ type Block = {
 
 type CoinStats = {
   coin: "Aegisum";
-        count: number;
-        last: number;
-        supply: number;
-        txes: number;
-        connections: number;
-        last_price: number;
-        last_usd_price: number;
-        blockchain_last_updated: number;
-        reward_last_updated: number;
-        masternodes_last_updated: number;
-        network_last_updated: number;
-        richlist_last_updated: number;
-        markets_last_updated: number;
-        orphan_index: number;
-        orphan_current: number;
-        newer_claim_address: boolean;
-}
+  count: number;
+  last: number;
+  supply: number;
+  txes: number;
+  connections: number;
+  last_price: number;
+  last_usd_price: number;
+  blockchain_last_updated: number;
+  reward_last_updated: number;
+  masternodes_last_updated: number;
+  network_last_updated: number;
+  richlist_last_updated: number;
+  markets_last_updated: number;
+  orphan_index: number;
+  orphan_current: number;
+  newer_claim_address: boolean;
+};
 
 type NetworkHistory = {
   blockindex: number;
@@ -85,27 +82,27 @@ type MempoolStats = {
   size: number;
   usage: number;
   timestamp: number;
-}
+};
 
-type MempoolTransactions= {
+type MempoolTransactions = {
   txid: string;
-        size: number ;
-        time: number;
-        height: number;
-}
+  size: number;
+  time: number;
+  height: number;
+};
 
 type Transaction = {
   txid: string;
   blockhash: string;
   blockindex: number;
   timestamp: number;
-  vin: [{ addresses: string; amount: number; }],
-  vout: [{ addresses: string; amount: number; }],
+  vin: [{ addresses: string; amount: number }];
+  vout: [{ addresses: string; amount: number }];
   total: number;
   tx_type: null;
   op_return: string | null;
   algo: string;
-}
+};
 
 // RPC API Types
 type BlockSummary = {
@@ -122,11 +119,11 @@ type MempoolInfo = {
   size: number;
   bytes: number;
   usage: number;
-  maxmempool : number;       
-  mempoolminfee : number;      
-  minrelaytxfee : number;      
-  unbroadcastcount : number;
-}
+  maxmempool: number;
+  mempoolminfee: number;
+  minrelaytxfee: number;
+  unbroadcastcount: number;
+};
 
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
@@ -241,8 +238,8 @@ export async function getLatestBlocks(limit = 10) {
 
 export async function getRecentTransactions(limit = 10) {
   try {
-    const { db } = await connectToDatabase()
-    
+    const { db } = await connectToDatabase();
+
     const transactions = await db
       .collection<Transaction>("txes")
       .find({})
@@ -259,7 +256,7 @@ export async function getRecentTransactions(limit = 10) {
 }
 
 export async function getBlockByHash(hash) {
-  const { db } = await connectToDatabase()
+  const { db } = await connectToDatabase();
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
   const transactions = await db
@@ -349,7 +346,9 @@ export async function getTransactionById(txid) {
   const { db } = await connectToDatabase();
 
   // First check in confirmed transactions
-  const transaction = await db.collection<Transaction>("txes").findOne({ txid });
+  const transaction = await db
+    .collection<Transaction>("txes")
+    .findOne({ txid });
 
   if (transaction) {
     return transaction;
@@ -486,7 +485,9 @@ export async function getAddressTransactions(address, limit = 25) {
   const enrichedTxs = [];
 
   for (const tx of addressTxs) {
-    const transaction = await db.collection<Transaction>("txes").findOne({ txid: tx.txid });
+    const transaction = await db
+      .collection<Transaction>("txes")
+      .findOne({ txid: tx.txid });
     if (transaction) {
       enrichedTxs.push({
         ...tx,
@@ -538,7 +539,9 @@ export async function getMempoolTransactions() {
 
     // Try to get more detailed mempool info from RPC
     let transactions = dbTransactions;
-    let stats = (await db.collection<MempoolStats>("mempoolstats").findOne({})) ?? {
+    let stats = (await db
+      .collection<MempoolStats>("mempoolstats")
+      .findOne({})) ?? {
       size: 0,
       bytes: 0,
       usage: 0,
@@ -1242,7 +1245,9 @@ export async function getPaginatedAddressTransactions(
   const enrichedTxs = [];
 
   for (const tx of addressTxs) {
-    const transaction = await db.collection<Transaction>("txes").findOne({ txid: tx.txid });
+    const transaction = await db
+      .collection<Transaction>("txes")
+      .findOne({ txid: tx.txid });
     if (transaction) {
       enrichedTxs.push({
         ...tx,

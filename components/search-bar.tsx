@@ -6,13 +6,15 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-type APIResponse = {
-  id: string;
-  type: string;
-} | {
-  error: string;
-  status: 500;
-}
+type APIResponse =
+  | {
+      id: string;
+      type: string;
+    }
+  | {
+      error: string;
+      status: 500;
+    };
 
 export function SearchBar({ className = "", id = "" }) {
   const [query, setQuery] = useState("");
@@ -30,7 +32,7 @@ export function SearchBar({ className = "", id = "" }) {
       const response = await fetch(
         `/api/search?q=${encodeURIComponent(query.trim())}`,
       );
-      const data = await response.json() as APIResponse;
+      const data = (await response.json()) as APIResponse;
 
       if (response.ok) {
         switch (data.type) {

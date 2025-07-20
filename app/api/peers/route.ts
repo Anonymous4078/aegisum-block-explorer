@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const peers = await rpcCall<number>('getconnectioncount');
+    const peers = await rpcCall<number>("getconnectioncount");
 
     return new NextResponse(peers, {
       status: 200,
