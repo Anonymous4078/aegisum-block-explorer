@@ -2,16 +2,22 @@ import { connectToDatabase } from "./mongodb";
 import axios from "axios";
 
 // RPC configuration
-const RPC_HOST = process.env.RPC_HOST ?? "localhost";
-const RPC_PORT = process.env.RPC_PORT ?? 39940;
-const RPC_USER = process.env.RPC_USER ?? "rpcuser";
-const RPC_PASS = process.env.RPC_PASS ?? "rpcpassword";
-const RPC_URL = `http://${RPC_USER}:${RPC_PASS}@${RPC_HOST}:${RPC_PORT}`;
+const rpcHost = process.env.RPC_HOST ?? "localhost";
+const rpcPort = process.env.RPC_PORT ? Number(process.env.RPC_PORT) : 39940;
+const rpcUser = process.env.RPC_USER ?? "rpcuser";
+const rpcPass = process.env.RPC_PASS ?? "rpcpassword";
+const rpcUrl = `http://${rpcUser}:${rpcPass}@${rpcHost}:${rpcPort}`;
+
+type RpcResponse<T> = {
+  result: T;
+  error: unknown | null;
+  id: number;
+}
 
 // Helper function to make RPC calls
 export async function rpcCall<T>(method: string, params = []): Promise<T> {
   try {
-    const response = await axios.post(RPC_URL, {
+    const response = await axios.post<RpcResponse<T>>(rpcUrl, {
       jsonrpc: "1.0",
       id: Date.now(),
       method,
@@ -35,6 +41,13 @@ type Address = {
   balance: number;
   received: number;
   sent: number;
+};
+
+type AddressTransaction = {
+  a_id: string;
+  txid: string;
+  amount: number;
+  blockindex: number;
 };
 
 type Block = {
@@ -84,7 +97,7 @@ type MempoolStats = {
   timestamp: number;
 };
 
-type MempoolTransactions = {
+type MempoolTransaction = {
   txid: string;
   size: number;
   time: number;
@@ -125,6 +138,49 @@ type MempoolInfo = {
   unbroadcastcount: number;
 };
 
+type Peer = {
+  id: number;
+  addr: string;
+  addrbind: string;
+  addrlocal: string;
+  mapped_as: number;
+  services: string;
+  servicesnames: string[];
+  relaytxes: boolean;
+  lastsend: number;
+  lastrecv: number;
+  last_transaction: number;
+  last_block: number;
+  bytessent: number;
+  bytesrecv: number;
+  conntime: number;
+  timeoffset: number;
+  pingtime: number;
+  minping: number;
+  pingwait: number;
+  version: number;
+  subver: string;
+  inbound: boolean;
+  addnode: boolean;
+  connection_type: string;
+  startingheight: number;
+  banscore: number;
+  synced_headers: number;
+  synced_blocks: number;
+  inflight: number[];
+  whitelisted: boolean;
+  permissions: string[];
+  minfeefilter: number;
+  bytessent_per_msg: {
+    msg: number;
+  };
+  bytesrecv_per_msg: {
+    msg: number;
+  };
+};
+
+type PeerInfo = Peer[];
+
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
@@ -156,7 +212,7 @@ export async function getNetworkStats() {
       supply: coinStats.supply ?? 0,
       txes: coinStats.txes ?? 0,
       connections: coinStats.connections ?? 0,
-      nethash: (latestNetworkHistory?.nethash ?? 0) / 1000, // Convert MH/s to GH/s
+      nethash: (latestNetworkHistory?.nethash ?? 0) / 1_000, // Convert MH/s to GH/s
       difficulty_pow: latestNetworkHistory?.difficulty_pow ?? 0,
       difficulty_pos: latestNetworkHistory?.difficulty_pos ?? 0,
     };
@@ -355,7 +411,7 @@ export async function getTransactionById(txid) {
   }
 
   // If not found, check in mempool
-  const mempoolTx = await db.collection("mempool").findOne({ txid });
+  const mempoolTx = await db.collection<MempoolTransaction>("mempool").findOne({ txid });
 
   if (mempoolTx) {
     try {
@@ -388,7 +444,7 @@ export async function getTransactionById(txid) {
                 if (prevTx && prevTx.vout && prevTx.vout[input.vout]) {
                   const prevOutput = prevTx.vout[input.vout];
                   const addresses = prevOutput.scriptPubKey.addresses ?? [];
-                  const amount = Math.round(prevOutput.value * 100000000); // Convert to satoshis
+                  const amount = Math.round(prevOutput.value * 10_00_00_000); // Convert to satoshis
 
                   if (addresses.length > 0) {
                     processedTx.vin.push({
@@ -415,8 +471,8 @@ export async function getTransactionById(txid) {
         // Process outputs
         if (rawTx.vout && Array.isArray(rawTx.vout)) {
           for (const output of rawTx.vout) {
-            const addresses = output.scriptPubKey.addresses || [];
-            const amount = Math.round(output.value * 100000000); // Convert to satoshis
+            const addresses = output.scriptPubKey.addresses ?? [];
+            const amount = Math.round(output.value * 10_00_00_000); // Convert to satoshis
 
             if (addresses.length > 0) {
               processedTx.vout.push({
@@ -475,7 +531,7 @@ export async function getAddressTransactions(address, limit = 25) {
 
   // Get transactions involving this address
   const addressTxs = await db
-    .collection("addresstxes")
+    .collection<AddressTransaction>("addresstxes")
     .find({ a_id: address })
     .sort({ blockindex: -1 })
     .limit(limit)
@@ -567,7 +623,7 @@ export async function getMempoolTransactions() {
           ([txid, info]) => ({
             txid,
             size: info.size ?? 0,
-            time: info.time ?? Math.floor(Date.now() / 1000),
+            time: info.time ?? Math.floor(Date.now() / 1_000),
             fee: info.fee ?? 0,
             ...info,
           }),
@@ -638,7 +694,7 @@ export async function getMempoolTransactions() {
             vin,
             vout,
             total: totalValue, // Total in satoshis
-            value: totalValue / 100000000, // Total in AEGS
+            value: totalValue / 10_00_00_000, // Total in AEGS
           });
         } else {
           // If we can't get raw transaction, add basic info
@@ -668,7 +724,7 @@ export async function getMempoolTransactions() {
       ...tx,
       txid: tx.txid ?? "",
       size: tx.size ?? 0,
-      time: tx.time ?? Math.floor(Date.now() / 1000),
+      time: tx.time ?? Math.floor(Date.now() / 1_000),
     }));
 
     return { transactions: finalTransactions, stats };
@@ -746,22 +802,22 @@ export async function getMiningStats() {
     },
     {
       halving: 1,
-      height: 100000,
+      height: 1_00_000,
       reward: 250,
-      supply: 50000000,
+      supply: 5_00_00_000,
       date: "Oct 2025",
       status:
         currentHalvingCycle === 1
           ? "active"
-          : currentBlock >= 100000
+          : currentBlock >= 1_00_000
             ? "past"
             : "future",
     },
     {
       halving: 2,
-      height: 200000,
+      height: 2_00_000,
       reward: 125,
-      supply: 75000000,
+      supply: 7_50_00_000,
       date: "May 2026",
       status:
         currentHalvingCycle === 2
@@ -1073,9 +1129,9 @@ export async function getMiningStats() {
 
   // Get block hashes for special blocks
   const specialBlocks = [
-    { height: 1, reward: 1000000, description: "Relaunch distribution" },
-    { height: 2, reward: 1000000, description: "Relaunch distribution" },
-    { height: 3, reward: 600000, description: "Relaunch distribution" },
+    { height: 1, reward: 10_00_000, description: "Relaunch distribution" },
+    { height: 2, reward: 10_00_000, description: "Relaunch distribution" },
+    { height: 3, reward: 6_00_000, description: "Relaunch distribution" },
   ];
 
   // Try to get the block hashes for the special blocks
@@ -1127,8 +1183,8 @@ export async function getPaginatedBlocks(page = 1, limit = 20) {
 
     // Get blocks with proper coinbase miner detection
     const blocks = await db
-      .collection("txes")
-      .aggregate([
+      .collection<Transaction>("txes")
+      .aggregate<BlockSummary>([
         { $sort: { blockindex: -1 } },
         {
           $group: {
@@ -1201,7 +1257,7 @@ export async function getPaginatedTransactions(page = 1, limit = 20) {
   const { db } = await connectToDatabase();
 
   // Get total count for pagination
-  const totalCount = await db.collection("txes").countDocuments();
+  const totalCount = await db.collection<Transaction>("txes").countDocuments();
   const totalPages = Math.ceil(totalCount / limit);
   const skip = (page - 1) * limit;
 
@@ -1228,13 +1284,13 @@ export async function getPaginatedAddressTransactions(
 
   // Get transactions involving this address
   const totalCount = await db
-    .collection("addresstxes")
+    .collection<AddressTransaction>("addresstxes")
     .countDocuments({ a_id: address });
   const totalPages = Math.ceil(totalCount / limit);
   const skip = (page - 1) * limit;
 
   const addressTxs = await db
-    .collection("addresstxes")
+    .collection<AddressTransaction>("addresstxes")
     .find({ a_id: address })
     .sort({ blockindex: -1 })
     .skip(skip)
@@ -1365,7 +1421,7 @@ export async function getPeerInfo() {
 
     const { db } = databaseConnection;
     const peerInfo = await db
-      .collection("peerinfo")
+      .collection<Peer>("peerinfo")
       .find({})
       .sort({ lastsend: -1 })
       .toArray();
@@ -1375,7 +1431,7 @@ export async function getPeerInfo() {
     }
 
     // If not in database, try direct RPC call
-    const peers = await rpcCall("getpeerinfo");
+    const peers = await rpcCall<PeerInfo>("getpeerinfo");
     return peers;
   } catch (error) {
     console.error("Error fetching peer info:", error);
