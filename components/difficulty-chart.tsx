@@ -6,14 +6,14 @@ import { formatNumber, formatTimestamp } from "@/lib/utils"
 import { Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts"
 import { z } from "zod"
 
-interface DifficultyData {
+type DifficultyData = {
   blockHeight: number
   difficulty: number
   timestamp: number
 }
 
-interface DifficultyChartProps {
-  data: DifficultyData[]
+type DifficultyChartProps = {
+  readonly data: DifficultyData[]
 }
 
 const TooltipPayloadSchema = z.object({
@@ -26,10 +26,10 @@ const TooltipPayloadSchema = z.object({
 
 type FormattedDifficultyData = z.infer<typeof TooltipPayloadSchema>
 
-interface CustomTooltipProps {
-  active?: boolean
-  payload?: { payload?: unknown }[]
-  label?: string | number
+type CustomTooltipProps = {
+ readonly active?: boolean
+readonly  payload?: { payload?: unknown }[]
+ readonly label?: string | number
 }
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
@@ -37,9 +37,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
 
   // Format the data for the chart
   const chartData = data.map((item) => ({
-    blockHeight: item.blockHeight,
-    difficulty: item.difficulty,
-    timestamp: item.timestamp,
+    ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
   }))
