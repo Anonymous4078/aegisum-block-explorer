@@ -65,7 +65,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     },
   };
 
-  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+  function CustomTooltip({ active, payload }: CustomTooltipProps): JSX.Element | null {
     if (active && payload && payload?.length && payload[0]?.payload) {
       const { data, success } = TooltipPayloadSchema.safeParse(payload[0].payload);
       if (success) {
@@ -84,6 +84,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
         );
       }
     }
+    
     return null;
   };
 
