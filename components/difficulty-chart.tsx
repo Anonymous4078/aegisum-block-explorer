@@ -43,8 +43,7 @@ type FormattedDifficultyData = z.infer<typeof TooltipPayloadSchema>;
 
 type CustomTooltipProps = {
   readonly active?: boolean;
-  readonly payload?: { payload?: unknown }[];
-  readonly label?: string | number;
+  readonly payload?: Array<{ payload?: unknown }>;
 };
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
@@ -73,29 +72,15 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
         const data = result.data;
         return (
           <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-                       {" "}
-            <p className="font-medium text-sm mb-1">
-              Block #{data.blockHeight}
-            </p>
-                       {" "}
-            <p className="text-xs text-muted-foreground mb-2">
-              {data.formattedTimestamp}
-            </p>
-                       {" "}
+            <p className="font-medium text-sm mb-1">Block #{data.blockHeight}</p>
+            <p className="text-xs text-muted-foreground mb-2">{data.formattedTimestamp}</p>
             <div className="flex items-center gap-2">
-                           {" "}
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>         
-                 {" "}
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               <p className="text-sm">
-                               {" "}
-                <span className="text-muted-foreground mr-1">Difficulty:</span> 
-                             {" "}
-                <span className="font-mono">{data.formattedDifficulty}</span>   
-                         {" "}
+                <span className="text-muted-foreground mr-1">Difficulty:</span>
+                <span className="font-mono">{data.formattedDifficulty}</span>
               </p>
-                         {" "}
             </div>
-                     {" "}
           </div>
         );
       }
@@ -105,55 +90,30 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
 
   return (
     <Card>
-           {" "}
       <CardHeader>
-                <CardTitle>Network Difficulty</CardTitle>       {" "}
-        <CardDescription>
-          Difficulty adjustment over the last {data.length} blocks
-        </CardDescription>
-             {" "}
+        <CardTitle>Network Difficulty</CardTitle>
+        <CardDescription>Difficulty adjustment over the last {data.length} blocks</CardDescription>
       </CardHeader>
-           {" "}
       <CardContent>
-               {" "}
         <div className="h-[400px]">
-                   {" "}
           <ResponsiveContainer width="100%" height="100%">
-                       {" "}
             <AreaChart
               data={chartData}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               onMouseMove={(e) => {
-                if (
-                  e.activeTooltipIndex !== undefined &&
-                  chartData[e.activeTooltipIndex]
-                ) {
-                  setActivePoint(chartData[e.activeTooltipIndex]);
+                if (e.activeTooltipIndex !== undefined && chartData[e.activeTooltipIndex]) {
+                  setActivePoint(chartData[e.activeTooltipIndex])
                 }
               }}
               onMouseLeave={() => setActivePoint(null)}
             >
-                           {" "}
               <defs>
-                               {" "}
-                <linearGradient
-                  id="difficultyGradient"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                                   {" "}
+                <linearGradient id="difficultyGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                                   {" "}
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />   
-                             {" "}
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />
                 </linearGradient>
-                             {" "}
               </defs>
-                           {" "}
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                           {" "}
               <XAxis
                 dataKey="blockHeight"
                 tick={{ fontSize: 12 }}
@@ -163,19 +123,17 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 tickFormatter={(value) => `#${value}`}
                 className="text-muted-foreground"
               />
-                           {" "}
               <YAxis
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => {
-                  if (value >= 1000) return `${(value / 1000).toFixed(1)}k`;
-                  return value.toFixed(1);
+                  if (value >= 1000) return `${(value / 1000).toFixed(1)}k`
+                  return value.toFixed(1)
                 }}
                 className="text-muted-foreground"
               />
-                            <Tooltip content={<CustomTooltip />} />
-                           {" "}
+              <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
                 dataKey="difficulty"
@@ -184,32 +142,16 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 fillOpacity={1}
                 fill="url(#difficultyGradient)"
                 strokeWidth={2}
-                activeDot={{
-                  r: 6,
-                  stroke: "#1d4ed8",
-                  strokeWidth: 2,
-                  fill: "#60a5fa",
-                }}
+                activeDot={{ r: 6, stroke: "#1d4ed8", strokeWidth: 2, fill: "#60a5fa" }}
                 isAnimationActive={false}
               />
-                           {" "}
               {activePoint && (
-                <ReferenceLine
-                  x={activePoint.blockHeight}
-                  stroke="#1d4ed8"
-                  strokeDasharray="3 3"
-                  strokeWidth={1.5}
-                />
+                <ReferenceLine x={activePoint.blockHeight} stroke="#1d4ed8" strokeDasharray="3 3" strokeWidth={1.5} />
               )}
-                         {" "}
             </AreaChart>
-                     {" "}
           </ResponsiveContainer>
-                 {" "}
         </div>
-             {" "}
       </CardContent>
-         {" "}
     </Card>
-  );
+  ); 
 }
