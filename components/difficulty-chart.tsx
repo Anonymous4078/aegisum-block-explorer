@@ -49,6 +49,17 @@ type CustomTooltipProps = {
 export function DifficultyChart({ data }: DifficultyChartProps) {
   const [activePoint, setActivePoint] = useState<DifficultyData | null>(null); 
 
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Network Difficulty</CardTitle>
+          <CardDescription>No data available</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+  
   const chartData = data.map(item => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
@@ -145,9 +156,15 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 activeDot={{ r: 6, stroke: "#1d4ed8", strokeWidth: 2, fill: "#60a5fa" }}
                 isAnimationActive={false}
               />
-              {activePoint && (
-                <ReferenceLine x={activePoint.blockHeight} stroke="#1d4ed8" strokeDasharray="3 3" strokeWidth={1.5} />
-              )}
+              {activePoint ? (
+                <ReferenceLine
+                  key={activePoint.blockHeight}
+                  x={activePoint.blockHeight}
+                  stroke="#1d4ed8"
+                  strokeDasharray="3 3"
+                  strokeWidth={1.5}
+                />
+              ) : null}
             </AreaChart>
           </ResponsiveContainer>
         </div>
