@@ -47,13 +47,13 @@ type CustomTooltipProps = {
 };
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
-  const [activePoint, setActivePoint] = useState<DifficultyData | null>(null); // Format the data for the chart
+  const [activePoint, setActivePoint] = useState<DifficultyData | null>(null); 
 
-  const chartData = data.map((item) => ({
+  const chartData = data.map(item => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
-  })); // Define chart colors based on Aegisum logo
+  })); 
 
   const chartConfig = {
     difficulty: {
@@ -66,10 +66,9 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
   };
 
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (active && payload && payload.length && payload[0]?.payload) {
-      const result = TooltipPayloadSchema.safeParse(payload[0].payload);
-      if (result.success) {
-        const data = result.data;
+    if (active && payload && payload?.length && payload[0]?.payload) {
+      const { data, success } = TooltipPayloadSchema.safeParse(payload[0].payload);
+      if (success) {
         return (
           <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
             <p className="font-medium text-sm mb-1">Block #{data.blockHeight}</p>
