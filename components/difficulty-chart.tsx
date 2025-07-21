@@ -58,7 +58,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     formattedTimestamp: formatTimestamp(item.timestamp),
   }));
 
-function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData>) => {
+function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData>): JSX.Element | null {
   if (
     active &&
     payload &&
