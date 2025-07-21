@@ -131,15 +131,15 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 tickLine={false}
                 axisLine={false}
                 minTickGap={30}
-                tickFormatter={(value) => `#${value}`}
+                tickFormatter={(value: number) => `#${value}`}
                 className="text-muted-foreground"
               />
               <YAxis
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => {
-                  if (value >= 1000) return `${(value / 1000).toFixed(1)}k`
+                tickFormatter={(value: number) => {
+                  if (value >= 1_000) return `${(value / 1000).toFixed(1)}k`
                   return value.toFixed(1)
                 }}
                 className="text-muted-foreground"
