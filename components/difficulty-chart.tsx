@@ -18,7 +18,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
-  type TooltipProps
+  type TooltipProps,
 } from "recharts";
 import { z } from "zod";
 
@@ -33,9 +33,9 @@ type DifficultyChartProps = {
 };
 
 type FormattedDifficultyData = {
-  blockHeight: number;
-  formattedTimestamp: string;
-  formattedDifficulty: string;
+  blockHeight: number;
+  formattedTimestamp: string;
+  formattedDifficulty: string;
 };
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
@@ -52,51 +52,61 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     );
   }
 
-  const chartData = data.map(item => ({
+  const chartData = data.map((item) => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
   }));
 
-function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData>): JSX.Element | null {
-  if (
-    active &&
-    payload &&
-    payload.length > 0
-  ) {
-    const PayloadSchema = z.object({
-  payload: z.object({
-    blockHeight: z.number(),
-    formattedTimestamp: z.string(),
-    formattedDifficulty: z.string(),
-  }),
-});
-    
-    const result = PayloadSchema.safeParse(payload[0]);
+  function CustomTooltip({
+    active,
+    payload,
+  }: TooltipProps<FormattedDifficultyData>): JSX.Element | null {
+    if (active && payload && payload.length > 0) {
+      const PayloadSchema = z.object({
+        payload: z.object({
+          blockHeight: z.number(),
+          formattedTimestamp: z.string(),
+          formattedDifficulty: z.string(),
+        }),
+      });
 
-    if (result.success) {
-      const data = result.data.payload;
+      const result = PayloadSchema.safeParse(payload[0]);
 
-      return (
-        <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium text-sm mb-1">Block #{data.blockHeight}</p>
-          <p className="text-xs text-muted-foreground mb-2">
-            {data.formattedTimestamp}
-          </p>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <p className="text-sm">
-              <span className="text-muted-foreground mr-1">Difficulty:</span>
-              <span className="font-mono">{data.formattedDifficulty}</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-  }
+      if (result.success) {
+        const data = result.data.payload;
 
-  return null;
-};  
+        return (
+          <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
+                     {" "}
+            <p className="font-medium text-sm mb-1">
+              Block #{data.blockHeight}
+            </p>
+                     {" "}
+            <p className="text-xs text-muted-foreground mb-2">
+                          {data.formattedTimestamp}         {" "}
+            </p>
+                     {" "}
+            <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-blue-500" /> 
+                       {" "}
+              <p className="text-sm">
+                             {" "}
+                <span className="text-muted-foreground mr-1">Difficulty:</span> 
+                           {" "}
+                <span className="font-mono">{data.formattedDifficulty}</span>   
+                       {" "}
+              </p>
+                       {" "}
+            </div>
+                   {" "}
+          </div>
+        );
+      }
+    }
+
+    return null;
+  }
 
   return (
     <Card>
@@ -118,7 +128,7 @@ function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData
                 left: 0,
                 bottom: 0,
               }}
-              onMouseMove={e => {
+              onMouseMove={(e) => {
                 if (
                   typeof e?.activeTooltipIndex === "number" &&
                   chartData[e.activeTooltipIndex]
@@ -131,7 +141,13 @@ function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData
               }}
             >
               <defs>
-                <linearGradient id="difficultyGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="difficultyGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
                   <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />
                 </linearGradient>
