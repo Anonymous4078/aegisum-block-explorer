@@ -42,12 +42,12 @@ const TooltipPayloadSchema = z.object({
 type FormattedDifficultyData = z.infer<typeof TooltipPayloadSchema>;
 
 type CustomTooltipProps = {
-  readonly active?: boolean;
+  readonly isActive?: boolean; // Renamed to satisfy boolean prop naming rule
   readonly payload?: Array<{ payload?: unknown }>;
 };
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
-  const [activePoint, setActivePoint] = useState<DifficultyData | null>(null); 
+  const [activePoint, setActivePoint] = useState<DifficultyData | null>(null);
 
   if (data.length === 0) {
     return (
@@ -59,12 +59,12 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
       </Card>
     );
   }
-  
-  const chartData = data.map(item => ({
+
+  const chartData = data.map((item) => ({
     ...item,
     formattedDifficulty: formatNumber(item.difficulty),
     formattedTimestamp: formatTimestamp(item.timestamp),
-  })); 
+  }));
 
   const chartConfig = {
     difficulty: {
@@ -76,16 +76,25 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     },
   };
 
-  function CustomTooltip({ active, payload }: CustomTooltipProps): JSX.Element | null {
-    if (active && payload && payload?.length && payload[0]?.payload) {
-      const { data, success } = TooltipPayloadSchema.safeParse(payload[0].payload);
+  function CustomTooltip({
+    isActive,
+    payload,
+  }: CustomTooltipProps): JSX.Element | null {
+    if (isActive && payload?.[0]?.payload) {
+      const { success, data } = TooltipPayloadSchema.safeParse(
+        payload[0].payload
+      );
       if (success) {
         return (
           <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-            <p className="font-medium text-sm mb-1">Block #{data.blockHeight}</p>
-            <p className="text-xs text-muted-foreground mb-2">{data.formattedTimestamp}</p>
+            <p className="font-medium text-sm mb-1">
+              Block #{data.blockHeight}
+            </p>
+            <p className="text-xs text-muted-foreground mb-2">
+              {data.formattedTimestamp}
+            </p>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <div className="w-3 h-3 rounded-full bg-blue-500" />
               <p className="text-sm">
                 <span className="text-muted-foreground mr-1">Difficulty:</span>
                 <span className="font-mono">{data.formattedDifficulty}</span>
@@ -95,15 +104,17 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
         );
       }
     }
-    
+
     return null;
-  };
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Network Difficulty</CardTitle>
-        <CardDescription>Difficulty adjustment over the last {data.length} blocks</CardDescription>
+        <CardDescription>
+          Difficulty adjustment over the last {data.length} blocks
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[400px]">
@@ -112,14 +123,23 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
               data={chartData}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               onMouseMove={(e) => {
-                if (e.activeTooltipIndex !== undefined && chartData[e.activeTooltipIndex]) {
-                  setActivePoint(chartData[e.activeTooltipIndex])
+                const index = e?.activeTooltipIndex;
+                if (index !== undefined && chartData[index]) {
+                  setActivePoint(chartData[index]);
                 }
               }}
-              onMouseLeave={() => setActivePoint(null)}
+              onMouseLeave={() => {
+                setActivePoint(null);
+              }}
             >
               <defs>
-                <linearGradient id="difficultyGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="difficultyGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
                   <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />
                 </linearGradient>
@@ -138,13 +158,21 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value: number) => {
-                  if (value >= 1_000) return `${(value / 1000).toFixed(1)}k`
-                  return value.toFixed(1)
-                }}
+                tickFormatter={(value: number) =>
+                  value >= 1_000
+                    ? `${(value / 1_000).toFixed(1)}k`
+                    : value.toFixed(1)
+                }
                 className="text-muted-foreground"
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip
+                content={
+                  <CustomTooltip
+                    isActive={true}
+                    payload={undefined}
+                  />
+                }
+              />
               <Area
                 type="monotone"
                 dataKey="difficulty"
@@ -153,7 +181,12 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 fillOpacity={1}
                 fill="url(#difficultyGradient)"
                 strokeWidth={2}
-                activeDot={{ r: 6, stroke: "#1d4ed8", strokeWidth: 2, fill: "#60a5fa" }}
+                activeDot={{
+                  r: 6,
+                  stroke: "#1d4ed8",
+                  strokeWidth: 2,
+                  fill: "#60a5fa",
+                }}
                 isAnimationActive={false}
               />
               {activePoint ? (
@@ -170,5 +203,5 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
         </div>
       </CardContent>
     </Card>
-  ); 
+  );
 }
