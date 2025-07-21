@@ -2,10 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { getKnownAddress } from "@/lib/known-addresses";
 import { ExternalLink } from "lucide-react";
 
-interface AddressTagProps {
-  address: string;
-  showLink?: boolean;
-  className?: string;
+type AddressTagProps = {
+  readonly address: string;
+  readonly showLink?: boolean;
+  readonly className?: string;
 }
 
 export function AddressTag({
@@ -43,6 +43,9 @@ export function AddressTag({
       badgeClass =
         "bg-cyan-100 text-cyan-800 hover:bg-cyan-100 dark:bg-cyan-900 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800";
       break;
+    case "others":
+      badgeClass =
+       "bg-orange-100 text-orange-800 hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 border-orange-200 dark:border-orange-800";    
     default:
       badgeClass =
         "bg-gray-100 text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700";
@@ -52,7 +55,7 @@ export function AddressTag({
     <Badge
       variant="outline"
       className={`${badgeClass} ${className} font-medium text-xs py-0.5 px-2`}
-      title={knownAddress.description || knownAddress.tag}
+      title={knownAddress.description ?? knownAddress.tag}
     >
       {knownAddress.tag}
       {knownAddress.url && showLink && (
