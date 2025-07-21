@@ -18,8 +18,9 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  type TooltipProps
 } from "recharts";
-import type { TooltipProps } from "recharts";
+import { z } from "zod";
 
 type DifficultyData = {
   blockHeight: number;
@@ -31,9 +32,10 @@ type DifficultyChartProps = {
   readonly data: DifficultyData[];
 };
 
-type FormattedDifficultyData = DifficultyData & {
-  formattedDifficulty: string;
-  formattedTimestamp: string;
+type FormattedDifficultyData = {
+  blockHeight: number;
+  formattedTimestamp: string;
+  formattedDifficulty: string;
 };
 
 export function DifficultyChart({ data }: DifficultyChartProps) {
@@ -56,36 +58,45 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
     formattedTimestamp: formatTimestamp(item.timestamp),
   }));
 
-  function CustomTooltip({
-    active,
-    payload,
-  }: TooltipProps<number, string>): JSX.Element | null {
-    if (
-      active &&
-      Array.isArray(payload) &&
-      payload.length > 0 &&
-      typeof payload[0]?.payload === "object" &&
-      payload[0].payload !== null
-    ) {
-      const d = payload[0].payload as FormattedDifficultyData;
+function CustomTooltip({ active, payload }: TooltipProps<FormattedDifficultyData>) => {
+  if (
+    active &&
+    payload &&
+    payload.length > 0
+  ) {
+    const PayloadSchema = z.object({
+  payload: z.object({
+    blockHeight: z.number(),
+    formattedTimestamp: z.string(),
+    formattedDifficulty: z.string(),
+  }),
+});
+    
+    const result = PayloadSchema.safeParse(payload[0]);
 
-      return (
-        <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium text-sm mb-1">Block #{d.blockHeight}</p>
-          <p className="text-xs text-muted-foreground mb-2">{d.formattedTimestamp}</p>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <p className="text-sm">
-              <span className="text-muted-foreground mr-1">Difficulty:</span>
-              <span className="font-mono">{d.formattedDifficulty}</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
+    if (result.success) {
+      const data = result.data.payload;
 
-    return null;
-  }
+      return (
+        <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
+          <p className="font-medium text-sm mb-1">Block #{data.blockHeight}</p>
+          <p className="text-xs text-muted-foreground mb-2">
+            {data.formattedTimestamp}
+          </p>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
+            <p className="text-sm">
+              <span className="text-muted-foreground mr-1">Difficulty:</span>
+              <span className="font-mono">{data.formattedDifficulty}</span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  return null;
+};  
 
   return (
     <Card>
