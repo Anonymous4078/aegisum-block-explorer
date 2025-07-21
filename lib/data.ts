@@ -372,7 +372,9 @@ export async function getLatestBlocks(limit = 10): Promise<BlockSummary[]> {
   }
 }
 
-export async function getRecentTransactions(limit = 10): Promise<Transaction[]> {
+export async function getRecentTransactions(
+  limit = 10,
+): Promise<Transaction[]> {
   try {
     const { db } = await connectToDatabase();
 

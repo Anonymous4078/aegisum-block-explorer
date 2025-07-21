@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 type AutoRefreshProps = {
   readonly interval?: number; // Refresh interval in seconds
-}
+};
 
 export function AutoRefresh({ interval = 60 }: AutoRefreshProps) {
   const router = useRouter();
