@@ -1,19 +1,19 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-export function formatNumber(num: number): string {
-  return new Intl.NumberFormat().format(num);
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat().format(value);
 }
 
 export function formatHash(hash: string, length = 6): string {
   if (!hash) return "";
   if (hash === "coinbase") return "Coinbase";
   if (hash.length <= length * 2 + 3) return hash;
-  return `${hash.substring(0, length)}...${hash.substring(hash.length - length)}`;
+  return `${hash.slice(0, length)}...${hash.slice(hash.length - length)}`;
 }
 
 export function formatTimestamp(timestamp: number): string {
@@ -28,7 +28,7 @@ export function timeAgo(timestamp: number): string {
     month: 2_592_000,
     week: 604_800,
     day: 86_400,
-    hour: 3_600,
+    hour: 3600,
     minute: 60,
     second: 1,
   };
