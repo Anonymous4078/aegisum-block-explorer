@@ -32,13 +32,13 @@ import { Pagination } from "@/components/pagination";
 import { AddressTag } from "@/components/address-tag";
 
 type AddressPageProps = {
-  params: { address: string };
-  searchParams: { page?: string };
+  readonly params: { address: string };
+  readonly searchParams: { page?: string };
 };
 
 export default async function AddressPage({ params, searchParams }: AddressPageProps) {
   const { address } = params;
-  const page = Number(searchParams.page) ?? 1;
+  const page = Number(searchParams.page) || 1;
 
   const addressInfo = await getAddressInfo(address);
 
