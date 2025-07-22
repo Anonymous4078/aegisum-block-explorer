@@ -1361,11 +1361,22 @@ export async function getPaginatedTransactions(page = 1, limit = 20) {
   };
 }
 
+type Pagination = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+};
+
+type PaginatedTransactionsResult = {
+  transactions: Transaction[];
+  pagination: Pagination;
+};
+
 export async function getPaginatedAddressTransactions(
   address: string,
   page = 1,
   limit = 20,
-) {
+): Promise<PaginatedTransactionsResult> {
   const { db } = await connectToDatabase();
 
   // Get transactions involving this address
