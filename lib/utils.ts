@@ -33,9 +33,8 @@ export function timeAgo(timestamp: number): string {
     second: 1,
   };
 
-  let counter;
   for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-    counter = Math.floor(seconds / secondsInUnit);
+    const counter = Math.floor(seconds / secondsInUnit);
     if (counter > 0) {
       return `${counter} ${unit}${counter === 1 ? "" : "s"} ago`;
     }
