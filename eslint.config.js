@@ -2,8 +2,10 @@
 import xo from "eslint-config-xo";
 import xoReact from "eslint-config-xo-react";
 import xoTypeScript from "eslint-config-xo-typescript";
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 export default [
+  eslintPluginUnicorn.configs.all,
   ...xo,
   ...xoReact,
   ...xoTypeScript,
@@ -17,7 +19,7 @@ export default [
       "@stylistic/object-curly-spacing": "off",
       "@stylistic/quotes": "off",
       "@stylistic/block-spacing": "off",
-      "@typescript-eslint/no-restricted-types": "off",
+  //    "@typescript-eslint/no-restricted-types": "off",
       "@stylistic/jsx-quotes": "off",
       "react/jsx-indent": "off",
       "react/jsx-indent-props": "off",
