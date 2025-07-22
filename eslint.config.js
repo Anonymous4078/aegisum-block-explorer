@@ -28,6 +28,7 @@ export default [
       "react/jsx-indent": "off",
       "react/jsx-indent-props": "off",
       "react/react-in-jsx-scope": "off",
+      "@typescript-eslint/prefer-readonly-parameter-type": "off"
     },
   },
 ];
