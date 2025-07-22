@@ -440,7 +440,7 @@ export async function getBlockByHash(hash: string): Promise<Block> {
   return block;
 }
 
-export async function getNextBlockHash(currentHeight: number): string | null {
+export async function getNextBlockHash(currentHeight: number): Promise<string | null> {
   try {
     const { db } = await connectToDatabase();
 
@@ -602,7 +602,7 @@ async function getRawTransaction(txid: string): Promise<RawTransaction> | null {
   }
 }
 
-export async function getAddressInfo(address) {
+export async function getAddressInfo(address): Promise<Address> {
   const { db } = await connectToDatabase();
 
   const addressInfo = await db
