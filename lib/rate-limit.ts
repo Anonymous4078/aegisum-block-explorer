@@ -41,10 +41,10 @@ export function rateLimit(
 }
 
 export function getClientIP(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const realIP = request.headers.get("x-real-ip");
+  const forwarded = request.headers.get("x-forwarded-for") ?? "";
+  const realIP = request.headers.get("x-real-ip") ?? "";
 
-  if (forwarded) {
+  if (forwarded.trim() !== "") {
     return forwarded.split(",")[0].trim();
   }
 
