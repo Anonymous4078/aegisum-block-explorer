@@ -33,8 +33,6 @@ const TickerResponseSchema = z.object({
   ask: z.string(),
 });
 
-type TickerResponse = z.infer<typeof TickerResponseSchema>;
-
 export async function getAegsPrice(): Promise<string> {
   // Check if cache is valid
   if (priceCache && Date.now() - priceCache.timestamp < CACHE_DURATION) {
@@ -59,14 +57,14 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const json = await response.json();
+    const json: unknown = await response.json();
     const parsed = TickerResponseSchema.safeParse(json);
 
     if (!parsed.success) {
       throw new Error("Invalid TickerResponse format");
     }
 
-    const data = parsed.data;
+    const { data } = parsed;
 
     if (data.success && data.price) {
       // Update cache
