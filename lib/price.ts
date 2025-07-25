@@ -1,5 +1,7 @@
+import { z } from "zod";
+
 // Cache duration in milliseconds (20 minutes)
-const cacheDuration = 20 * 60 * 1_000;
+const cacheDuration = 20 * 60 * 1000;
 
 type PriceCache = {
   price: string;
@@ -19,6 +21,20 @@ type TickerResponse = {
 
 let priceCache: PriceCache | null = null;
 
+// Zod schema to validate API response
+const TickerResponseSchema = z.object({
+  success: z.boolean(),
+  initialprice: z.string(),
+  price: z.string(),
+  high: z.string(),
+  low: z.string(),
+  volume: z.string(),
+  bid: z.string(),
+  ask: z.string(),
+});
+
+type TickerResponse = z.infer<typeof TickerResponseSchema>;
+
 export async function getAegsPrice(): Promise<string> {
   // Check if cache is valid
   if (priceCache && Date.now() - priceCache.timestamp < CACHE_DURATION) {
@@ -30,11 +46,12 @@ export async function getAegsPrice(): Promise<string> {
     const response = await fetch(
       "https://tradeogre.com/api/v1/ticker/AEGS-USDT",
       {
-        next: { revalidate: cacheDuration / 1000 }, // Use Next.js cache
         headers: {
           Accept: "application/json",
           "User-Agent": "Aegisum-Explorer/1.0",
         },
+        // Use Next.js cache
+        next: { revalidate: cacheDuration / 1000 }, 
       },
     );
 
@@ -42,25 +59,14 @@ export async function getAegsPrice(): Promise<string> {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    // Type guard to validate runtime structure
-    function isTickerResponse(obj: unknown): obj is TickerResponse {
-      return (
-        typeof obj === "object" &&
-        obj !== null &&
-        "price" in obj &&
-        "symbol" in obj &&
-        (typeof "price") in obj === "number" &&
-        (typeof "symbol") in obj === "string"
-      );
-    }
+    const json = await response.json();
+    const parsed = TickerResponseSchema.safeParse(json);
 
-    const json: unknown = await response.json();
+    if (!parsed.success) {
+      throw new Error("Invalid TickerResponse format");
+    }
 
-    if (!isTickerResponse(json)) {
-      throw new Error("Invalid TickerResponse format");
-    }
-
-    const data: TickerResponse = json;
+    const data = parsed.data;
 
     if (data.success && data.price) {
       // Update cache
@@ -92,5 +98,6 @@ export function calculateUsdValue(
 ): string {
   const price = Number.parseFloat(aegsPrice);
   const usdValue = aegsAmount * price;
-  return usdValue.toFixed(2); // Round to 2 decimal places (pennies)
+  // Round to 2 decimal places (pennies)
+  return usdValue.toFixed(2); 
 }
