@@ -30,6 +30,8 @@ export async function getAegsPrice(): Promise<string> {
     return cached.price;
   }
 
+  let latestPrice: string | null = null;
+
   try {
     // Cache is expired or doesn't exist, fetch new data
     const response = await fetch(
@@ -58,26 +60,29 @@ export async function getAegsPrice(): Promise<string> {
     const { data } = parsed;
 
     if (data.success && data.price) {
-      // Update cache
-      priceCache = {
-        price: data.price,
-        timestamp: Date.now(),
-      };
-      return data.price;
+      latestPrice = data.price;
     } else {
       throw new Error("Invalid API response format");
     }
   } catch (error) {
     console.error("Error fetching AEGS price:", error);
+  }
 
+  if (latestPrice) {
+    priceCache = {
+      price: latestPrice,
+      timestamp: Date.now(),
+    };
+    return latestPrice;
+  }
+  
     // If fetch fails, try to use old cached data even if expired
-    if (priceCache) {
-      return priceCache.price;
+    if (cached) {
+      return cached.price;
     }
 
     // Default fallback value if everything fails
     return "0.000000";
-  }
 }
 
 // Helper function to calculate USD value from AEGS amount
