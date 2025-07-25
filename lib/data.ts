@@ -440,7 +440,9 @@ export async function getBlockByHash(hash: string): Promise<Block> {
   return block;
 }
 
-export async function getNextBlockHash(currentHeight: number): Promise<string | null> {
+export async function getNextBlockHash(
+  currentHeight: number,
+): Promise<string | null> {
   try {
     const { db } = await connectToDatabase();
 
@@ -1362,14 +1364,14 @@ export async function getPaginatedTransactions(page = 1, limit = 20) {
 }
 
 type Pagination = {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
 };
 
 type PaginatedTransactionsResult = {
-  transactions: Transaction[];
-  pagination: Pagination;
+  transactions: Transaction[];
+  pagination: Pagination;
 };
 
 export async function getPaginatedAddressTransactions(

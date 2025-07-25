@@ -23,14 +23,14 @@ let priceCache: PriceCache | null = null;
 
 // Zod schema to validate API response
 const TickerResponseSchema = z.object({
-  success: z.boolean(),
-  initialprice: z.string(),
-  price: z.string(),
-  high: z.string(),
-  low: z.string(),
-  volume: z.string(),
-  bid: z.string(),
-  ask: z.string(),
+  success: z.boolean(),
+  initialprice: z.string(),
+  price: z.string(),
+  high: z.string(),
+  low: z.string(),
+  volume: z.string(),
+  bid: z.string(),
+  ask: z.string(),
 });
 
 export async function getAegsPrice(): Promise<string> {
@@ -49,7 +49,7 @@ export async function getAegsPrice(): Promise<string> {
           "User-Agent": "Aegisum-Explorer/1.0",
         },
         // Use Next.js cache
-        next: { revalidate: cacheDuration / 1000 }, 
+        next: { revalidate: cacheDuration / 1000 },
       },
     );
 
@@ -58,13 +58,13 @@ export async function getAegsPrice(): Promise<string> {
     }
 
     const json: unknown = await response.json();
-    const parsed = TickerResponseSchema.safeParse(json);
+    const parsed = TickerResponseSchema.safeParse(json);
 
-    if (!parsed.success) {
-      throw new Error("Invalid TickerResponse format");
-    }
+    if (!parsed.success) {
+      throw new Error("Invalid TickerResponse format");
+    }
 
-    const { data } = parsed;
+    const { data } = parsed;
 
     if (data.success && data.price) {
       // Update cache
@@ -97,5 +97,5 @@ export function calculateUsdValue(
   const price = Number.parseFloat(aegsPrice);
   const usdValue = aegsAmount * price;
   // Round to 2 decimal places (pennies)
-  return usdValue.toFixed(2); 
+  return usdValue.toFixed(2);
 }

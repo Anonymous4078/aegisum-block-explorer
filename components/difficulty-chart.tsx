@@ -82,7 +82,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
   }: CustomTooltipProps): JSX.Element | null {
     if (isActive && payload?.[0]?.payload) {
       const { success, data } = TooltipPayloadSchema.safeParse(
-        payload[0].payload
+        payload[0].payload,
       );
       if (success) {
         return (
@@ -166,12 +166,7 @@ export function DifficultyChart({ data }: DifficultyChartProps) {
                 className="text-muted-foreground"
               />
               <Tooltip
-                content={
-                  <CustomTooltip
-                    isActive={true}
-                    payload={undefined}
-                  />
-                }
+                content={<CustomTooltip isActive={true} payload={undefined} />}
               />
               <Area
                 type="monotone"

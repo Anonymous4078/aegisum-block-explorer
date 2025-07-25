@@ -2,9 +2,9 @@
 import xo from "eslint-config-xo";
 import xoReact from "eslint-config-xo-react";
 import xoTypeScript from "eslint-config-xo-typescript";
-import eslintPluginUnicorn from 'eslint-plugin-unicorn';
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 
 export default [
   eslintPluginUnicorn.configs.all,
@@ -30,7 +30,7 @@ export default [
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/prefer-readonly-parameter-types": "off",
       "@typescript-eslint/no-magic-numbers": "off",
-      "func-style": "off"
+      "func-style": "off",
     },
   },
 ];

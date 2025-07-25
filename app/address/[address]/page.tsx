@@ -36,7 +36,10 @@ type AddressPageProps = {
   readonly searchParams: { page?: string };
 };
 
-export default async function AddressPage({ params, searchParams }: AddressPageProps) {
+export default async function AddressPage({
+  params,
+  searchParams,
+}: AddressPageProps) {
   const { address } = params;
   const page = Number(searchParams.page) || 1;
 

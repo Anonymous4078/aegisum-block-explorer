@@ -6,7 +6,7 @@ type AddressTagProps = {
   readonly address: string;
   readonly showLink?: boolean;
   readonly className?: string;
-}
+};
 
 export function AddressTag({
   address,
@@ -45,7 +45,7 @@ export function AddressTag({
       break;
     case "others":
       badgeClass =
-       "bg-orange-100 text-orange-800 hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 border-orange-200 dark:border-orange-800";    
+        "bg-orange-100 text-orange-800 hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 border-orange-200 dark:border-orange-800";
     default:
       badgeClass =
         "bg-gray-100 text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700";
