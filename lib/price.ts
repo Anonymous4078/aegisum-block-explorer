@@ -8,17 +8,6 @@ type PriceCache = {
   timestamp: number;
 };
 
-type TickerResponse = {
-  success: boolean;
-  initialprice: string;
-  price: string;
-  high: string;
-  low: string;
-  volume: string;
-  bid: string;
-  ask: string;
-};
-
 let priceCache: PriceCache | null = null;
 
 // Zod schema to validate API response
@@ -35,8 +24,10 @@ const TickerResponseSchema = z.object({
 
 export async function getAegsPrice(): Promise<string> {
   // Check if cache is valid
-  if (priceCache && Date.now() - priceCache.timestamp < CACHE_DURATION) {
-    return priceCache.price;
+  const cached = priceCache; // capture snapshot
+
+  if (cached && Date.now() - cached.timestamp < cacheDuration) {
+    return cached.price;
   }
 
   try {
