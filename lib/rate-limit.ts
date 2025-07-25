@@ -44,7 +44,7 @@ export function getClientIP(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for") ?? "";
   const realIP = request.headers.get("x-real-ip") ?? "";
 
-  if (forwarded.trim() !== "") {
+  if (forwarded) {
     return forwarded.split(",")[0].trim();
   }
 
