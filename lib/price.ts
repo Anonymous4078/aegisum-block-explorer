@@ -22,6 +22,13 @@ const TickerResponseSchema = z.object({
   volume: z.string(),
 });
 
+function updateCache(price: string) {
+  priceCache = {
+    price,
+    timestamp: Date.now(),
+  };
+}
+
 export async function getAegsPrice(): Promise<string> {
   // Check if cache is valid
   const cached = priceCache; // capture snapshot
@@ -69,10 +76,7 @@ export async function getAegsPrice(): Promise<string> {
   }
 
   if (latestPrice) {
-    priceCache = {
-      price: latestPrice,
-      timestamp: Date.now(),
-    };
+    updateCache(latestPrice);
     return latestPrice;
   }
   
