@@ -23,14 +23,14 @@ let priceCache: PriceCache | null = null;
 
 // Zod schema to validate API response
 const TickerResponseSchema = z.object({
-  success: z.boolean(),
-  initialprice: z.string(),
-  price: z.string(),
-  high: z.string(),
-  low: z.string(),
-  volume: z.string(),
-  bid: z.string(),
   ask: z.string(),
+  bid: z.string(),
+  high: z.string(),
+  initialprice: z.string(),
+  low: z.string(),
+  price: z.string(),
+  success: z.boolean(),
+  volume: z.string(),
 });
 
 export async function getAegsPrice(): Promise<string> {
