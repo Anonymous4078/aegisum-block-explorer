@@ -3,7 +3,7 @@ import { connectToDatabase } from "./mongodb";
 
 // RPC configuration
 const rpcHost = process.env.RPC_HOST ?? "localhost";
-const rpcPort = process.env.RPC_PORT ? Number(process.env.RPC_PORT) : 39_940;
+const rpcPort = Number(process.env.RPC_PORT) ?? 39_940;
 const rpcUser = process.env.RPC_USER ?? "rpcuser";
 const rpcPass = process.env.RPC_PASS ?? "rpcpassword";
 const rpcUrl = `http://${rpcUser}:${rpcPass}@${rpcHost}:${rpcPort}`;
@@ -41,6 +41,7 @@ type Address = {
   balance: number;
   received: number;
   sent: number;
+  __v: number;
 };
 
 type AddressTransaction = {
@@ -48,6 +49,7 @@ type AddressTransaction = {
   txid: string;
   amount: number;
   blockindex: number;
+  __v: number;
 };
 
 type Block = {
@@ -312,7 +314,7 @@ export async function getNetworkStats() {
 }
 
 // Enhanced error handling for getLatestBlocks
-export async function getLatestBlocks(limit = 10): Promise<BlockSummary[]> {
+export async function getLatestBlocks(limit = 10): Promise<BlockSummary[] | []> {
   try {
     const { db } = await connectToDatabase();
 
@@ -374,7 +376,7 @@ export async function getLatestBlocks(limit = 10): Promise<BlockSummary[]> {
 
 export async function getRecentTransactions(
   limit = 10,
-): Promise<Transaction[]> {
+): Promise<Transaction[] | []> {
   try {
     const { db } = await connectToDatabase();
 
@@ -393,11 +395,11 @@ export async function getRecentTransactions(
   }
 }
 
-export async function getBlockByHash(hash: string): Promise<Block> {
-  const { db } = await connectToDatabase();
+export async function getBlockByHash(hash: string): Promise<Block | null> {
+  const { database } = await connectToDatabase();
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
-  const transactions = await db
+  const transactions = await database 
     .collection<Transaction>("txes")
     .find({ blockhash: hash })
     .toArray();
