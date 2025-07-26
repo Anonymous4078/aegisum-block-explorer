@@ -11,7 +11,7 @@ type PriceCache = {
 let priceCache: PriceCache | null = null;
 
 // Zod schema to validate API response
-const TickerResponseSchema = z.object({
+const tickerResponseSchema = z.object({
   ask: z.string(),
   bid: z.string(),
   high: z.string(),
@@ -22,7 +22,7 @@ const TickerResponseSchema = z.object({
   volume: z.string(),
 });
 
-function updateCache(price: string) {
+function updateCache(price: string): void {
   priceCache = {
     price,
     timestamp: Date.now(),
@@ -58,7 +58,7 @@ export async function getAegsPrice(): Promise<string> {
     }
 
     const json: unknown = await response.json();
-    const parsed = TickerResponseSchema.safeParse(json);
+    const parsed = tickerResponseSchema.safeParse(json);
 
     if (!parsed.success) {
       throw new Error("Invalid TickerResponse format");
