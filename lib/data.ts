@@ -268,7 +268,9 @@ export async function getNetworkStats() {
   try {
     const database = await connectToDatabase();
 
-    const coinStats = await database.collection<CoinStats>("coinstats").findOne({});
+    const coinStats = await database
+      .collection<CoinStats>("coinstats")
+      .findOne({});
 
     // Provide fallback values if database query returns null
     if (!coinStats) {
@@ -285,7 +287,7 @@ export async function getNetworkStats() {
     }
 
     // Get the latest network history for current difficulty and hashrate
-    const latestNetworkHistory = await database 
+    const latestNetworkHistory = await database
       .collection<NetworkHistory>("networkhistories")
       .findOne({}, { sort: { timestamp: -1 } });
 
@@ -314,7 +316,9 @@ export async function getNetworkStats() {
 }
 
 // Enhanced error handling for getLatestBlocks
-export async function getLatestBlocks(limit = 10): Promise<BlockSummary[] | []> {
+export async function getLatestBlocks(
+  limit = 10,
+): Promise<BlockSummary[] | []> {
   try {
     const db = await connectToDatabase();
 
@@ -399,7 +403,7 @@ export async function getBlockByHash(hash: string): Promise<Block | null> {
   const db = await connectToDatabase();
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
-  const transactions = await db 
+  const transactions = await db
     .collection<Transaction>("txes")
     .find({ blockhash: hash })
     .toArray();
@@ -477,15 +481,15 @@ export async function getTransactionsByBlockHash(
   hash: string,
 ): Promise<Transactions[] | []> {
   try {
-  const db= await connectToDatabase();
+    const db = await connectToDatabase();
 
-  const transactions = await db
-    .collection<Transaction>("txes")
-    .find({ blockhash: hash })
-    .toArray();
+    const transactions = await db
+      .collection<Transaction>("txes")
+      .find({ blockhash: hash })
+      .toArray();
 
-  return transactions;
-     } catch (error) {
+    return transactions;
+  } catch (error) {
     console.error("Error fetching transactions:", error);
     // Return empty array on error
     return [];
@@ -665,7 +669,7 @@ export async function getRichList(limit = 100) {
 }
 
 export async function getNetworkHistory(limit = 30) {
-  const  db = await connectToDatabase();
+  const db = await connectToDatabase();
 
   const history = await db
     .collection<NetworkHistory>("networkhistories")

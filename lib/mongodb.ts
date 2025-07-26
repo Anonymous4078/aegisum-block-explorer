@@ -14,10 +14,10 @@ export async function connectToDatabase(): Promise<Db> {
   const databaseSnapshot = cachedDatabase;
 
   // If we already have a connection, use it
-  if ( databaseSnapshot) {
+  if (databaseSnapshot) {
     return databaseSnapshot;
   }
-  
+
   // If no connection exists, create a new one
   try {
     const client = new MongoClient(uri);
@@ -25,7 +25,7 @@ export async function connectToDatabase(): Promise<Db> {
     const database = client.db(databaseName);
 
     updateCache(database);
-    
+
     console.log("Connected to MongoDB successfully");
     return database;
   } catch (error) {
