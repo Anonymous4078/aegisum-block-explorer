@@ -10,8 +10,7 @@ function updateCache(database: Db): void {
   cachedDatabase = database;
 }
 
-export async function connectToDatabase(): Promise<Db>
-> {
+export async function connectToDatabase(): Promise<Db> {
   const databaseSnapshot = cachedDatabase;
 
   // If we already have a connection, use it
