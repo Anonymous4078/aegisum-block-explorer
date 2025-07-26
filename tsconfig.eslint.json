@@ -4,5 +4,5 @@
     "allowJs": true,
     "checkJs": true
   },
-  "include": ["app", "components", "hooks", "lib", "public", "style", "scripts"]
+  "include": ["app", "components", "hooks", "public", "style", "scripts"]
 }
