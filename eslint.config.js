@@ -16,6 +16,7 @@ export default [
   {
     rules: {
       curly: "off",
+      "no-console": "off",
       "@stylistic/operator-linebreak": "off",
       "@stylistic/semi": "off",
       "@stylistic/indent": "off",
