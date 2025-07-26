@@ -266,7 +266,7 @@ type RawTransaction = {
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
-    const { database } = await connectToDatabase();
+    const database = await connectToDatabase();
 
     const coinStats = await database.collection<CoinStats>("coinstats").findOne({});
 
@@ -316,7 +316,7 @@ export async function getNetworkStats() {
 // Enhanced error handling for getLatestBlocks
 export async function getLatestBlocks(limit = 10): Promise<BlockSummary[] | []> {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
 
     // Get blocks with proper coinbase miner detection
     const blocks = await db
@@ -378,7 +378,7 @@ export async function getRecentTransactions(
   limit = 10,
 ): Promise<Transaction[] | []> {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
 
     const transactions = await db
       .collection<Transaction>("txes")
@@ -396,10 +396,10 @@ export async function getRecentTransactions(
 }
 
 export async function getBlockByHash(hash: string): Promise<Block | null> {
-  const { database } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // Since we don't have a dedicated blocks collection, we'll reconstruct from txes
-  const transactions = await database 
+  const transactions = await db 
     .collection<Transaction>("txes")
     .find({ blockhash: hash })
     .toArray();
@@ -446,7 +446,7 @@ export async function getNextBlockHash(
   currentHeight: number,
 ): Promise<string | null> {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
 
     // First try to find in the blocks collection
     const nextBlock = await db
@@ -475,8 +475,9 @@ export async function getNextBlockHash(
 
 export async function getTransactionsByBlockHash(
   hash: string,
-): Promise<Transactions[]> {
-  const { db } = await connectToDatabase();
+): Promise<Transactions[] | []> {
+  try {
+  const db= await connectToDatabase();
 
   const transactions = await db
     .collection<Transaction>("txes")
@@ -484,10 +485,15 @@ export async function getTransactionsByBlockHash(
     .toArray();
 
   return transactions;
+     } catch (error) {
+    console.error("Error fetching transactions:", error);
+    // Return empty array on error
+    return [];
+  }
 }
 
 export async function getTransactionById(txid: string) {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // First check in confirmed transactions
   const transaction = await db
@@ -595,7 +601,7 @@ export async function getTransactionById(txid: string) {
 }
 
 // Helper function to get raw transaction data from RPC
-async function getRawTransaction(txid: string): Promise<RawTransaction> | null {
+async function getRawTransaction(txid: string): Promise<RawTransaction | null> {
   try {
     // Use the getrawtransaction RPC command with verbose=1 to get detailed transaction info
     const rawTx = await rpcCall<RawTransaction>("getrawtransaction", [txid, 1]);
@@ -607,7 +613,7 @@ async function getRawTransaction(txid: string): Promise<RawTransaction> | null {
 }
 
 export async function getAddressInfo(address): Promise<Address> {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   const addressInfo = await db
     .collection<Address>("addresses")
@@ -617,7 +623,7 @@ export async function getAddressInfo(address): Promise<Address> {
 }
 
 export async function getAddressTransactions(address: string, limit = 25) {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // Get transactions involving this address
   const addressTxs = await db
@@ -646,7 +652,7 @@ export async function getAddressTransactions(address: string, limit = 25) {
 }
 
 export async function getRichList(limit = 100) {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   const addresses = await db
     .collection<Address>("addresses")
@@ -659,7 +665,7 @@ export async function getRichList(limit = 100) {
 }
 
 export async function getNetworkHistory(limit = 30) {
-  const { db } = await connectToDatabase();
+  const  db = await connectToDatabase();
 
   const history = await db
     .collection<NetworkHistory>("networkhistories")
@@ -673,7 +679,7 @@ export async function getNetworkHistory(limit = 30) {
 
 // Enhanced getMempoolTransactions function that enriches transactions with actual values
 export async function getMempoolTransactions() {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   try {
     // Get mempool transactions from database
@@ -830,7 +836,7 @@ export async function getMempoolTransactions() {
 
 // Update the getMiningStats function to use the correct Aegisum parameters
 export async function getMiningStats() {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // Get current blockchain info
   const coinStats = await db.collection<CoinStats>("coinstats").findOne({});
@@ -1258,7 +1264,7 @@ export async function getMiningStats() {
 
 // Fixed getPaginatedBlocks function with proper coinbase miner detection
 export async function getPaginatedBlocks(page = 1, limit = 20) {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   try {
     // Calculate skip value for pagination
@@ -1344,7 +1350,7 @@ export async function getPaginatedBlocks(page = 1, limit = 20) {
 }
 
 export async function getPaginatedTransactions(page = 1, limit = 20) {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // Get total count for pagination
   const totalCount = await db.collection<Transaction>("txes").countDocuments();
@@ -1381,7 +1387,7 @@ export async function getPaginatedAddressTransactions(
   page = 1,
   limit = 20,
 ): Promise<PaginatedTransactionsResult> {
-  const { db } = await connectToDatabase();
+  const db = await connectToDatabase();
 
   // Get transactions involving this address
   const totalCount = await db
@@ -1424,7 +1430,7 @@ export async function getDifficultyHistory(limit = 50) {
   try {
     const databaseConnection = await connectToDatabase();
 
-    const { db } = databaseConnection;
+    const db = databaseConnection;
 
     // First try to get data from networkhistories collection
     const networkHistory = await db
@@ -1522,7 +1528,7 @@ export async function getPeerInfo() {
     // First try to get from database if available
     const databaseConnection = await connectToDatabase();
 
-    const { db } = databaseConnection;
+    const db = databaseConnection;
     const peerInfo = await db
       .collection<Peer>("peerinfo")
       .find({})
