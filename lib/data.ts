@@ -853,7 +853,7 @@ export async function getMiningStats() {
       const hashps = await rpcCall<number>("getnetworkhashps", [120, -1]);
       if (hashps) {
         // Convert to GH/s (RPC returns H/s)
-        networkhashps = hashps / 1_00_00_00_000;
+        networkhashps = hashps / 1_000_000_000;
       }
     }
   } catch (error) {
@@ -929,287 +929,287 @@ export async function getMiningStats() {
     },
     {
       halving: 4,
-      height: 400000,
+      height: 400_000,
       reward: 31.25,
-      supply: 93750000,
+      supply: 93_750_000,
       date: "Jul 2027",
       status:
         currentHalvingCycle === 4
           ? "active"
-          : currentBlock >= 400000
+          : currentBlock >= 400_000
             ? "past"
             : "future",
     },
     {
       halving: 5,
-      height: 500000,
+      height: 500_000,
       reward: 15.625,
-      supply: 96875000,
+      supply: 96_875_000,
       date: "Feb 2028",
       status:
         currentHalvingCycle === 5
           ? "active"
-          : currentBlock >= 500000
+          : currentBlock >= 500_000
             ? "past"
             : "future",
     },
     {
       halving: 6,
-      height: 600000,
+      height: 600_000,
       reward: 7.8125,
-      supply: 98437500,
+      supply: 98_437_500,
       date: "Sep 2028",
       status:
         currentHalvingCycle === 6
           ? "active"
-          : currentBlock >= 600000
+          : currentBlock >= 600_000
             ? "past"
             : "future",
     },
     {
       halving: 7,
-      height: 700000,
+      height: 700_000,
       reward: 3.90625,
-      supply: 99218750,
+      supply: 99_218_750,
       date: "Apr 2029",
       status:
         currentHalvingCycle === 7
           ? "active"
-          : currentBlock >= 700000
+          : currentBlock >= 700_000
             ? "past"
             : "future",
     },
     {
       halving: 8,
-      height: 800000,
+      height: 800_000,
       reward: 1.953125,
-      supply: 99609375,
+      supply: 99_609_375,
       date: "Nov 2029",
       status:
         currentHalvingCycle === 8
           ? "active"
-          : currentBlock >= 800000
+          : currentBlock >= 800_000
             ? "past"
             : "future",
     },
     {
       halving: 9,
-      height: 900000,
+      height: 900_000,
       reward: 0.9765625,
-      supply: 99804688,
+      supply: 99_804_688,
       date: "Jun 2030",
       status:
         currentHalvingCycle === 9
           ? "active"
-          : currentBlock >= 900000
+          : currentBlock >= 900_000
             ? "past"
             : "future",
     },
     {
       halving: 10,
-      height: 1000000,
+      height: 1_000_000,
       reward: 0.48828125,
-      supply: 99902344,
+      supply: 99_902_344,
       date: "Jan 2031",
       status:
         currentHalvingCycle === 10
           ? "active"
-          : currentBlock >= 1000000
+          : currentBlock >= 1_000_000
             ? "past"
             : "future",
     },
     {
       halving: 11,
-      height: 1100000,
+      height: 1_100_000,
       reward: 0.244140625,
-      supply: 99951172,
+      supply: 99_951_172,
       date: "Aug 2031",
       status:
         currentHalvingCycle === 11
           ? "active"
-          : currentBlock >= 1100000
+          : currentBlock >= 1_100_000
             ? "past"
             : "future",
     },
     {
       halving: 12,
-      height: 1200000,
+      height: 1_200_000,
       reward: 0.1220703125,
-      supply: 99975586,
+      supply: 99_975_586,
       date: "Mar 2032",
       status:
         currentHalvingCycle === 12
           ? "active"
-          : currentBlock >= 1200000
+          : currentBlock >= 1_200_000
             ? "past"
             : "future",
     },
     {
       halving: 13,
-      height: 1300000,
+      height: 1_300_000,
       reward: 0.0610351563,
-      supply: 99987793,
+      supply: 99_987_793,
       date: "Oct 2032",
       status:
         currentHalvingCycle === 13
           ? "active"
-          : currentBlock >= 1300000
+          : currentBlock >= 1_300_000
             ? "past"
             : "future",
     },
     {
       halving: 14,
-      height: 1400000,
+      height: 1_400_000,
       reward: 0.0305175781,
-      supply: 99993896,
+      supply: 99_993_896,
       date: "May 2033",
       status:
         currentHalvingCycle === 14
           ? "active"
-          : currentBlock >= 1400000
+          : currentBlock >= 1_400_000
             ? "past"
             : "future",
     },
     {
       halving: 15,
-      height: 1500000,
+      height: 1_500_000,
       reward: 0.0152587891,
-      supply: 99996948,
+      supply: 99_996_948,
       date: "Dec 2033",
       status:
         currentHalvingCycle === 15
           ? "active"
-          : currentBlock >= 1500000
+          : currentBlock >= 1_500_000
             ? "past"
             : "future",
     },
     {
       halving: 16,
-      height: 1600000,
+      height: 1_600_000,
       reward: 0.0076293945,
-      supply: 99998474,
+      supply: 99_998_474,
       date: "Jul 2034",
       status:
         currentHalvingCycle === 16
           ? "active"
-          : currentBlock >= 1600000
+          : currentBlock >= 1_600_000
             ? "past"
             : "future",
     },
     {
       halving: 17,
-      height: 1700000,
+      height: 1_700_000,
       reward: 0.0038146973,
-      supply: 99999237,
+      supply: 99_999_237,
       date: "Feb 2035",
       status:
         currentHalvingCycle === 17
           ? "active"
-          : currentBlock >= 1700000
+          : currentBlock >= 1_700_000
             ? "past"
             : "future",
     },
     {
       halving: 18,
-      height: 1800000,
+      height: 1_800_000,
       reward: 0.0019073486,
-      supply: 99999619,
+      supply: 99_999_619,
       date: "Sep 2035",
       status:
         currentHalvingCycle === 18
           ? "active"
-          : currentBlock >= 1800000
+          : currentBlock >= 1_800_000
             ? "past"
             : "future",
     },
     {
       halving: 19,
-      height: 1900000,
+      height: 1_900_000,
       reward: 0.0009536743,
-      supply: 99999809,
+      supply: 99_999_809,
       date: "Apr 2036",
       status:
         currentHalvingCycle === 19
           ? "active"
-          : currentBlock >= 1900000
+          : currentBlock >= 1_900_000
             ? "past"
             : "future",
     },
     {
       halving: 20,
-      height: 2000000,
+      height: 2_000_000,
       reward: 0.0004768372,
-      supply: 99999905,
+      supply: 99_999_905,
       date: "Nov 2036",
       status:
         currentHalvingCycle === 20
           ? "active"
-          : currentBlock >= 2000000
+          : currentBlock >= 2_000_000
             ? "past"
             : "future",
     },
     {
       halving: 21,
-      height: 2100000,
+      height: 2_100_000,
       reward: 0.0002384186,
-      supply: 99999952,
+      supply: 99_999_952,
       date: "Jun 2037",
       status:
         currentHalvingCycle === 21
           ? "active"
-          : currentBlock >= 2100000
+          : currentBlock >= 2_100_000
             ? "past"
             : "future",
     },
     {
       halving: 22,
-      height: 2200000,
+      height: 2_200_000,
       reward: 0.0001192093,
-      supply: 99999976,
+      supply: 99_999_976,
       date: "Jan 2038",
       status:
         currentHalvingCycle === 22
           ? "active"
-          : currentBlock >= 2200000
+          : currentBlock >= 2_200_000
             ? "past"
             : "future",
     },
     {
       halving: 23,
-      height: 2300000,
+      height: 2_300_000,
       reward: 0.0000596046,
-      supply: 99999988,
+      supply: 99_999_988,
       date: "Aug 2038",
       status:
         currentHalvingCycle === 23
           ? "active"
-          : currentBlock >= 2300000
+          : currentBlock >= 2_300_000
             ? "past"
             : "future",
     },
     {
       halving: 24,
-      height: 2400000,
+      height: 2_400_000,
       reward: 0.0000298023,
-      supply: 99999994,
+      supply: 99_999_994,
       date: "Mar 2039",
       status:
         currentHalvingCycle === 24
           ? "active"
-          : currentBlock >= 2400000
+          : currentBlock >= 2_400_000
             ? "past"
             : "future",
     },
     {
       halving: 25,
-      height: 2500000,
+      height: 2_500_000,
       reward: 0.0000149012,
-      supply: 99999997,
+      supply: 99_999_997,
       date: "Oct 2039",
       status:
         currentHalvingCycle === 25
           ? "active"
-          : currentBlock >= 2500000
+          : currentBlock >= 2_500_000
             ? "past"
             : "future",
     },
@@ -1217,9 +1217,9 @@ export async function getMiningStats() {
 
   // Get block hashes for special blocks
   const specialBlocks = [
-    { height: 1, reward: 10_00_000, description: "Relaunch distribution" },
-    { height: 2, reward: 10_00_000, description: "Relaunch distribution" },
-    { height: 3, reward: 6_00_000, description: "Relaunch distribution" },
+    { height: 1, reward: 1_000_000, description: "Relaunch distribution" },
+    { height: 2, reward: 1_000_000, description: "Relaunch distribution" },
+    { height: 3, reward: 600_000, description: "Relaunch distribution" },
   ];
 
   // Try to get the block hashes for the special blocks
