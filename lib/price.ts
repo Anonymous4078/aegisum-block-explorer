@@ -30,9 +30,9 @@ function updateCache(price: string) {
 }
 
 export async function getAegsPrice(): Promise<string> {
-  // Check if cache is valid
-  const cached = priceCache; // capture snapshot
+  const cached = priceCache;
 
+  // Check if cache is valid
   if (cached && Date.now() - cached.timestamp < cacheDuration) {
     return cached.price;
   }
@@ -75,7 +75,7 @@ export async function getAegsPrice(): Promise<string> {
     console.error("Error fetching AEGS price:", error);
   }
 
-  if (latestPrice) {
+  if (latestPrice !== null) {
     updateCache(latestPrice);
     return latestPrice;
   }
