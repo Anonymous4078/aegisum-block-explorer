@@ -1,5 +1,5 @@
-import { connectToDatabase } from "./mongodb";
 import axios from "axios";
+import { connectToDatabase } from "./mongodb";
 
 // RPC configuration
 const rpcHost = process.env.RPC_HOST ?? "localhost";
@@ -292,7 +292,7 @@ export async function getNetworkStats() {
       supply: coinStats.supply ?? 0,
       txes: coinStats.txes ?? 0,
       connections: coinStats.connections ?? 0,
-      nethash: (latestNetworkHistory?.nethash ?? 0) / 1_000, // Convert MH/s to GH/s
+      nethash: (latestNetworkHistory?.nethash ?? 0) / 1000, // Convert MH/s to GH/s
       difficulty_pow: latestNetworkHistory?.difficulty_pow ?? 0,
       difficulty_pos: latestNetworkHistory?.difficulty_pos ?? 0,
     };
@@ -532,7 +532,7 @@ export async function getTransactionById(txid: string) {
                 if (prevTx && prevTx?.vout && prevTx?.vout[input.vout]) {
                   const prevOutput = prevTx?.vout[input.vout];
                   const addresses = prevOutput?.scriptPubKey?.addresses ?? [];
-                  const amount = Math.round(prevOutput?.value * 10_00_00_000); // Convert to satoshis
+                  const amount = Math.round(prevOutput?.value * 100_000_000); // Convert to satoshis
 
                   if (addresses.length > 0) {
                     processedTx.vin.push({
@@ -560,7 +560,7 @@ export async function getTransactionById(txid: string) {
         if (rawTx.vout && Array.isArray(rawTx.vout)) {
           for (const output of rawTx.vout) {
             const addresses = output.scriptPubKey.addresses ?? [];
-            const amount = Math.round(output.value * 10_00_00_000); // Convert to satoshis
+            const amount = Math.round(output.value * 100_000_000); // Convert to satoshis
 
             if (addresses.length > 0) {
               processedTx.vout.push({
@@ -745,7 +745,7 @@ export async function getMempoolTransactions() {
           if (rawTx.vout && Array.isArray(rawTx.vout)) {
             for (const output of rawTx.vout) {
               const addresses = output.scriptPubKey?.addresses ?? [];
-              const amount = Math.round((output.value ?? 0) * 10_00_00_000); // Convert to satoshis
+              const amount = Math.round((output.value ?? 0) * 100_000_000); // Convert to satoshis
 
               if (addresses.length > 0) {
                 vout.push({
@@ -782,7 +782,7 @@ export async function getMempoolTransactions() {
             vin,
             vout,
             total: totalValue, // Total in satoshis
-            value: totalValue / 10_00_00_000, // Total in AEGS
+            value: totalValue / 100_000_000, // Total in AEGS
           });
         } else {
           // If we can't get raw transaction, add basic info
@@ -812,7 +812,7 @@ export async function getMempoolTransactions() {
       ...tx,
       txid: tx.txid ?? "",
       size: tx.size ?? 0,
-      time: tx.time ?? Math.floor(Date.now() / 1_000),
+      time: tx.time ?? Math.floor(Date.now() / 1000),
     }));
 
     return { transactions: finalTransactions, stats };
@@ -841,7 +841,7 @@ export async function getMiningStats() {
 
   // Try to get mining info from RPC
   let difficulty = latestNetworkHistory?.difficulty_pow ?? 0;
-  let networkhashps = (latestNetworkHistory?.nethash ?? 0) / 1_000; // Convert MH/s to GH/s
+  let networkhashps = (latestNetworkHistory?.nethash ?? 0) / 1000; // Convert MH/s to GH/s
 
   try {
     // Get mining info from RPC
@@ -863,9 +863,9 @@ export async function getMiningStats() {
 
   // Aegisum halving parameters
   const blockReward = 500; // Initial block reward is 500 AEGS
-  const halvingInterval = 1_00_000; // Blocks between halvings (every 100k blocks)
+  const halvingInterval = 100_000; // Blocks between halvings (every 100k blocks)
   const blockTime = 180; // Target block time in seconds (3 minutes)
-  const maxSupply = 10_00_00_000; // 100 million AEGS max supply
+  const maxSupply = 100_000_000; // 100 million AEGS max supply
 
   // Calculate current halving cycle
   const currentHalvingCycle = Math.floor(currentBlock / halvingInterval);
@@ -890,40 +890,40 @@ export async function getMiningStats() {
     },
     {
       halving: 1,
-      height: 1_00_000,
+      height: 100_000,
       reward: 250,
-      supply: 5_00_00_000,
+      supply: 50_000_000,
       date: "Oct 2025",
       status:
         currentHalvingCycle === 1
           ? "active"
-          : currentBlock >= 1_00_000
+          : currentBlock >= 100_000
             ? "past"
             : "future",
     },
     {
       halving: 2,
-      height: 2_00_000,
+      height: 200_000,
       reward: 125,
-      supply: 7_50_00_000,
+      supply: 75_000_000,
       date: "May 2026",
       status:
         currentHalvingCycle === 2
           ? "active"
-          : currentBlock >= 200000
+          : currentBlock >= 200_000
             ? "past"
             : "future",
     },
     {
       halving: 3,
-      height: 300000,
+      height: 300_000,
       reward: 62.5,
-      supply: 87500000,
+      supply: 87_500_000,
       date: "Dec 2026",
       status:
         currentHalvingCycle === 3
           ? "active"
-          : currentBlock >= 300000
+          : currentBlock >= 300_000
             ? "past"
             : "future",
     },
