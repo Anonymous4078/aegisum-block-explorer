@@ -14,7 +14,7 @@ export default [
   ...xoReact,
   ...xoTypeScript,
   {
-    ignores: ["lib"],
+    ignores: ["lib/*"],
     rules: {
       curly: "off",
       "no-console": "off",
