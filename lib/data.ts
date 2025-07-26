@@ -3,25 +3,25 @@ import { connectToDatabase } from "./mongodb";
 
 // RPC configuration
 const rpcHost = process.env.RPC_HOST ?? "localhost";
-const rpcPort = process.env.RPC_PORT ? Number(process.env.RPC_PORT) : 39940;
+const rpcPort = process.env.RPC_PORT ? Number(process.env.RPC_PORT) : 39_940;
 const rpcUser = process.env.RPC_USER ?? "rpcuser";
 const rpcPass = process.env.RPC_PASS ?? "rpcpassword";
 const rpcUrl = `http://${rpcUser}:${rpcPass}@${rpcHost}:${rpcPort}`;
 
 type RpcResponse<T> = {
   result: T;
-  error: unknown | null;
+  error: unknown;
   id: number;
 };
 
 // Helper function to make RPC calls
-export async function rpcCall<T>(method: string, params = []): Promise<T> {
+export async function rpcCall<T>(method: string, parameters = []): Promise<T> {
   try {
     const response = await axios.post<RpcResponse<T>>(rpcUrl, {
-      jsonrpc: "1.0",
       id: Date.now(),
+      jsonrpc: "1.0",
       method,
-      params,
+      parameters,
     });
 
     if (response.data.error) {
@@ -264,9 +264,9 @@ type RawTransaction = {
 // Enhanced error handling for getNetworkStats
 export async function getNetworkStats() {
   try {
-    const { db } = await connectToDatabase();
+    const { database } = await connectToDatabase();
 
-    const coinStats = await db.collection<CoinStats>("coinstats").findOne({});
+    const coinStats = await database.collection<CoinStats>("coinstats").findOne({});
 
     // Provide fallback values if database query returns null
     if (!coinStats) {
@@ -283,7 +283,7 @@ export async function getNetworkStats() {
     }
 
     // Get the latest network history for current difficulty and hashrate
-    const latestNetworkHistory = await db
+    const latestNetworkHistory = await database 
       .collection<NetworkHistory>("networkhistories")
       .findOne({}, { sort: { timestamp: -1 } });
 
