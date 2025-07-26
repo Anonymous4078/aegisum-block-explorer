@@ -23,18 +23,18 @@ const TickerResponseSchema = z.object({
 });
 
 function updateCache(price: string) {
-  priceCache = {
-    price,
-    timestamp: Date.now(),
-  };
+  priceCache = {
+    price,
+    timestamp: Date.now(),
+  };
 }
 
 export async function getAegsPrice(): Promise<string> {
   const cached = priceCache;
 
   // Check if cache is valid
-  if (cached && Date.now() - cached.timestamp < cacheDuration) {
-    return cached.price;
+  if (cached && Date.now() - cached.timestamp < cacheDuration) {
+    return cached.price;
   }
 
   let latestPrice: string | null = null;
@@ -76,17 +76,17 @@ export async function getAegsPrice(): Promise<string> {
   }
 
   if (latestPrice !== null) {
-    updateCache(latestPrice);
-    return latestPrice;
+    updateCache(latestPrice);
+    return latestPrice;
   }
-  
-    // If fetch fails, try to use old cached data even if expired
-    if (cached) {
-      return cached.price;
-    }
 
-    // Default fallback value if everything fails
-    return "0.000000";
+  // If fetch fails, try to use old cached data even if expired
+  if (cached) {
+    return cached.price;
+  }
+
+  // Default fallback value if everything fails
+  return "0.000000";
 }
 
 // Helper function to calculate USD value from AEGS amount
