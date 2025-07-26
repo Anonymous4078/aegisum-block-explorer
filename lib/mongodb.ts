@@ -1,6 +1,6 @@
 import { type Db, MongoClient } from "mongodb";
 
-const url = process.env.MONGODB_URI ?? "mongodb://localhost:27017/explorerdb";
+const uri = process.env.MONGODB_URI ?? "mongodb://localhost:27017/explorerdb";
 const databaseName = process.env.MONGODB_DB ?? "explorerdb";
 
 // Cache the MongoDB connection to reuse it across requests
@@ -10,7 +10,7 @@ function updateCache(database: Db): void {
   cachedDatabase = database;
 }
 
-export async function connectToDatabase(): Promise<Db>;
+export async function connectToDatabase(): Promise<Db>
 > {
   const databaseSnapshot = cachedDatabase;
 
@@ -21,7 +21,7 @@ export async function connectToDatabase(): Promise<Db>;
   
   // If no connection exists, create a new one
   try {
-    const client = new MongoClient(url);
+    const client = new MongoClient(uri);
     await client.connect();
     const database = client.db(databaseName);
 
