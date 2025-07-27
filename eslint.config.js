@@ -23,6 +23,9 @@ export default [
             ref: true,
             className: true,
           },
+          ignore: [
+            ".*Props$",
+          ],
         },
       ],
       curly: "off",
