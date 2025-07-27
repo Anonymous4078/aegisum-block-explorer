@@ -15,6 +15,22 @@ export default [
   ...xoTypeScript,
   {
     rules: {
+      'unicorn/prevent-abbreviations': [
+        'error',
+        {
+          allowList: {
+            props: true,
+            ref: true,
+            className: true,
+          },
+        },
+      ],
+      'unicorn/no-keyword-prefix': [
+        'error',
+        {
+          ignore: ['className'],
+        },
+      ],
       curly: "off",
       "no-console": "off",
       "@stylistic/operator-linebreak": "off",
