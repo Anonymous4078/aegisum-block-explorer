@@ -2,15 +2,14 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { ButtonProps } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
+import { type ButtonProps, buttonVariants } from "@/components/ui/button";
 
-function Pagination(props: React.ComponentProps<"nav">): JSX.Element {
+function Pagination({ className, ...props }: React.ComponentProps<"nav">): JSX.Element {
 	return (
 		<nav
 			role="navigation"
 			aria-label="pagination"
-			className={cn("mx-auto flex w-full justify-center", props.className)}
+			className={cn("mx-auto flex w-full justify-center", className)}
 			{...props}
 		/>
 	);
@@ -18,10 +17,10 @@ function Pagination(props: React.ComponentProps<"nav">): JSX.Element {
 Pagination.displayName = "Pagination";
 
 const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProps<"ul">>(
-	(props, ref): JSX.Element => (
+	({ className, ...props }, ref): JSX.Element => (
 		<ul
 			ref={ref}
-			className={cn("flex flex-row items-center gap-1", props.className)}
+			className={cn("flex flex-row items-center gap-1", className)}
 			{...props}
 		/>
 	),
@@ -29,10 +28,10 @@ const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProp
 PaginationContent.displayName = "PaginationContent";
 
 const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<"li">>(
-	(props, ref): JSX.Element => (
+	({ className, ...props }, ref): JSX.Element => (
 		<li
 			ref={ref}
-			className={cn("", props.className)}
+			className={cn("", className)}
 			{...props}
 		/>
 	),
@@ -66,14 +65,12 @@ function PaginationLink({
 }
 PaginationLink.displayName = "PaginationLink";
 
-function PaginationPrevious(
-	props: React.ComponentProps<typeof PaginationLink>,
-): JSX.Element {
+function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof PaginationLink>): JSX.Element {
 	return (
 		<PaginationLink
 			aria-label="Go to previous page"
 			size="default"
-			className={cn("gap-1 pl-2.5", props.className)}
+			className={cn("gap-1 pl-2.5", className)}
 			{...props}
 		>
 			<ChevronLeft className="h-4 w-4" />
@@ -83,14 +80,12 @@ function PaginationPrevious(
 }
 PaginationPrevious.displayName = "PaginationPrevious";
 
-function PaginationNext(
-	props: React.ComponentProps<typeof PaginationLink>,
-): JSX.Element {
+function PaginationNext({ className, ...props }: React.ComponentProps<typeof PaginationLink>): JSX.Element {
 	return (
 		<PaginationLink
 			aria-label="Go to next page"
 			size="default"
-			className={cn("gap-1 pr-2.5", props.className)}
+			className={cn("gap-1 pr-2.5", className)}
 			{...props}
 		>
 			<span>Next</span>
@@ -100,13 +95,11 @@ function PaginationNext(
 }
 PaginationNext.displayName = "PaginationNext";
 
-function PaginationEllipsis(
-	props: React.ComponentProps<"span">,
-): JSX.Element {
+function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">): JSX.Element {
 	return (
 		<span
 			aria-hidden
-			className={cn("flex h-9 w-9 items-center justify-center", props.className)}
+			className={cn("flex h-9 w-9 items-center justify-center", className)}
 			{...props}
 		>
 			<MoreHorizontal className="h-4 w-4" />
