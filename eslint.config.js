@@ -25,12 +25,6 @@ export default [
           },
         },
       ],
-      'unicorn/no-keyword-prefix': [
-        'error',
-        {
-          ignore: ['className'],
-        },
-      ],
       curly: "off",
       "no-console": "off",
       "@stylistic/operator-linebreak": "off",
