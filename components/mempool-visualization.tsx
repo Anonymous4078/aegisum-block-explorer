@@ -1,22 +1,17 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Transaction } from "@/types/mongodb";
 
 interface MempoolVisualizationProps {
-  transactions: any[];
-  stats: {
-    size: number;
-    bytes: number;
-    usage: number;
-  };
+  readonly transactions: Transaction[];
 }
 
 export function MempoolVisualization({
   transactions,
-  stats,
 }: MempoolVisualizationProps) {
   // Enhanced helper function to get transaction value
-  const getTransactionValue = (tx: any) => {
+  const getTransactionValue = (tx: Transaction) => {
     // Debug: log the transaction structure (remove this after debugging)
     if (process.env.NODE_ENV === "development") {
       console.log("Transaction structure:", tx);
