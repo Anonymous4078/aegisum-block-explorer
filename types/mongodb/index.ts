@@ -61,6 +61,7 @@ export type NetworkHistory = {
   difficulty_pow: number;
   nethash: number;
   timestamp: number;
+  __v: number;
 };
 
 export type MempoolStats = {
@@ -82,10 +83,20 @@ export type Transaction = {
   blockhash: string;
   blockindex: number;
   timestamp: number;
-  vin: [{ addresses: string; amount: number }];
-  vout: [{ addresses: string; amount: number }];
+  vin: TransactionInput[];
+  vout: TransactionOutput[];
   total: number;
-  tx_type: null;
+  tx_type: string | null;
   op_return: string | null;
-  algo: string;
+  algo: "scrypt";
 };
+
+export interface TransactionInput {
+  addresses: string;
+  amount: number;
+}
+
+export interface TransactionOutput {
+  addresses: string;
+  amount: number;
+}
