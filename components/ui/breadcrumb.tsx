@@ -4,14 +4,12 @@ import { Slot } from "@radix-ui/react-slot";
 
 import { cn } from "@/lib/utils";
 
-type BreadcrumbProps = Readonly<
-  React.ComponentPropsWithoutRef<"nav">
-> & {
+type BreadcrumbProps = Readonly<React.ComponentPropsWithoutRef<"nav">> & {
   readonly separator?: React.ReactNode;
 };
 
 const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
-  (props, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />
+  (props, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />,
 );
 Breadcrumb.displayName = "Breadcrumb";
 
@@ -23,7 +21,7 @@ const BreadcrumbList = React.forwardRef<
     ref={ref}
     className={cn(
       "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
-      className
+      className,
     )}
     {...props}
   />
@@ -42,9 +40,7 @@ const BreadcrumbItem = React.forwardRef<
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
-type BreadcrumbLinkProps = Readonly<
-  React.ComponentPropsWithoutRef<"a">
-> & {
+type BreadcrumbLinkProps = Readonly<React.ComponentPropsWithoutRef<"a">> & {
   readonly asChild?: boolean;
 };
 
@@ -58,7 +54,7 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
         {...props}
       />
     );
-  }
+  },
 );
 BreadcrumbLink.displayName = "BreadcrumbLink";
 
@@ -78,7 +74,7 @@ const BreadcrumbPage = React.forwardRef<
 BreadcrumbPage.displayName = "BreadcrumbPage";
 
 const BreadcrumbSeparator = (
-  props: Readonly<React.ComponentProps<"li">>
+  props: Readonly<React.ComponentProps<"li">>,
 ): JSX.Element => {
   const { children, className, ...rest } = props;
   return (
@@ -95,7 +91,7 @@ const BreadcrumbSeparator = (
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
 const BreadcrumbEllipsis = (
-  props: Readonly<React.ComponentProps<"span">>
+  props: Readonly<React.ComponentProps<"span">>,
 ): JSX.Element => {
   const { className, ...rest } = props;
   return (

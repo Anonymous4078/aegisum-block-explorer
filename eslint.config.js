@@ -15,28 +15,26 @@ export default [
   ...xoTypeScript,
   {
     rules: {
-      'unicorn/prevent-abbreviations': [
-        'error',
+      "unicorn/prevent-abbreviations": [
+        "error",
         {
           allowList: {
             props: true,
             ref: true,
             className: true,
           },
-          ignore: [
-            ".*Props$",
-          ],
+          ignore: [".*Props$"],
         },
       ],
       curly: "off",
-      "complexity": "off",
+      complexity: "off",
       "max-statements": "off",
       "max-lines-per-function": "off",
       "@stylistic/arrow-parens": "off",
       "@stylistic/indent-binary-ops": "off",
       "@stylistic/function-paren-newline": "off",
       "@stylistic/object-curly-newline": "off",
-      "@stylistic/max-len": "off",                                  
+      "@stylistic/max-len": "off",
       "no-console": "off",
       "@stylistic/operator-linebreak": "off",
       "@stylistic/semi": "off",
@@ -51,8 +49,8 @@ export default [
       "react/jsx-indent-props": "off",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-magic-numbers": "off",
-      "func-style": "off",    
-      "@typescript-eslint/prefer-readonly-parameter-types": "off", 
+      "func-style": "off",
+      "@typescript-eslint/prefer-readonly-parameter-types": "off",
     },
   },
 ];

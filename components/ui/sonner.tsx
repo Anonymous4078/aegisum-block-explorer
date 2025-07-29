@@ -9,7 +9,9 @@ function Toaster(props: ToasterProps): JSX.Element {
   const { theme } = useTheme();
 
   const safeTheme: ToasterProps["theme"] =
-    theme === "light" || theme === "dark" || theme === "system" ? theme : "system";
+    theme === "light" || theme === "dark" || theme === "system"
+      ? theme
+      : "system";
 
   return (
     <Sonner
